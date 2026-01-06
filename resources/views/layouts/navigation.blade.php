@@ -15,17 +15,19 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('home-office.index')" :active="request()->routeIs('home-office.*')">
-                        {{ __('Home Office') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('flexible-schedule.index')"
-                        :active="request()->routeIs('flexible-schedule.*')">
-                        {{ __('Horario Flexible') }}
-                    </x-nav-link>
+                    @if(Auth::user()->canManageAssignments())
+                        <x-nav-link :href="route('home-office.index')" :active="request()->routeIs('home-office.*')">
+                            {{ __('Home Office') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('flexible-schedule.index')"
+                            :active="request()->routeIs('flexible-schedule.*')">
+                            {{ __('Horario Flexible') }}
+                        </x-nav-link>
+                    @endif
                     @if(Auth::user()->isAdmin())
-                    <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.*')">
-                        ⚙️ {{ __('Configuración') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.*')">
+                            ⚙️ {{ __('Configuración') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -89,17 +91,19 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('home-office.index')" :active="request()->routeIs('home-office.*')">
-                {{ __('Home Office') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('flexible-schedule.index')"
-                :active="request()->routeIs('flexible-schedule.*')">
-                {{ __('Horario Flexible') }}
-            </x-responsive-nav-link>
+            @if(Auth::user()->canManageAssignments())
+                <x-responsive-nav-link :href="route('home-office.index')" :active="request()->routeIs('home-office.*')">
+                    {{ __('Home Office') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('flexible-schedule.index')"
+                    :active="request()->routeIs('flexible-schedule.*')">
+                    {{ __('Horario Flexible') }}
+                </x-responsive-nav-link>
+            @endif
             @if(Auth::user()->isAdmin())
-            <x-responsive-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.*')">
-                ⚙️ {{ __('Configuración') }}
-            </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.*')">
+                    ⚙️ {{ __('Configuración') }}
+                </x-responsive-nav-link>
             @endif
         </div>
 

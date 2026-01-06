@@ -86,9 +86,6 @@
                 />
             @endif
 
-            {{-- Accesos rápidos --}}
-            <x-dashboard.quick-access :user="$user" />
-
         </div>
     </div>
 
