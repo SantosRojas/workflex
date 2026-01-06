@@ -28,10 +28,15 @@ class HomeOfficeController extends Controller
         $maxPeoplePerDay = SystemSetting::getInt('max_people_per_day', 7);
         
         // Obtener asignaciones del mes
-        $assignments = HomeOfficeAssignment::with(['user', 'assignedBy'])
-            ->forMonth($month, $year)
-            ->orderBy('date')
-            ->get();
+        $assignmentsQuery = HomeOfficeAssignment::with(['user', 'assignedBy'])
+            ->forMonth($month, $year);
+        
+        // Si es manager (no admin), filtrar solo por su área
+        if ($user->canManageAssignments() && !$user->isAdmin()) {
+            $assignmentsQuery->whereHas('user', fn($q) => $q->where('work_area', $user->work_area));
+        }
+        
+        $assignments = $assignmentsQuery->orderBy('date')->get();
         
         // Si es manager o admin, obtener usuarios (incluyéndose a sí mismo)
         $teamMembers = collect();
