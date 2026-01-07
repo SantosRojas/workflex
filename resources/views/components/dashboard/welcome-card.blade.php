@@ -6,7 +6,8 @@
             <div>
                 <h3 class="text-lg font-semibold mb-2">¡Bienvenido, {{ $user->name }}!</h3>
                 <p class="text-gray-600 dark:text-gray-400">
-                    <span class="font-medium">Área:</span> {{ $user->work_area }} |
+                    <span class="font-medium">Área:</span> {{ $user->work_area }} 
+                    {{-- |
                     <span class="font-medium">Rol:</span>
                     @if($user->role === 'admin')
                         <span class="text-red-600 dark:text-red-400">Administrador</span>
@@ -14,7 +15,7 @@
                         <span class="text-blue-600 dark:text-blue-400">Manager</span>
                     @else
                         <span class="text-green-600 dark:text-green-400">Usuario</span>
-                    @endif
+                    @endif --}}
                 </p>
             </div>
             <div class="text-right">
