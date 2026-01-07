@@ -5,16 +5,42 @@
     $lastDay = $firstDay->copy()->endOfMonth();
     $startPadding = $firstDay->dayOfWeekIso - 1;
     $assignmentsByDate = $homeOfficeAssignments->groupBy(fn($a) => $a->date->format('Y-m-d'));
+
+    // Calcular mes anterior y siguiente
+    $previousMonth = $firstDay->copy()->subMonth();
+    $nextMonth = $firstDay->copy()->addMonth();
 @endphp
 
 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
     <div class="p-6">
         {{-- Header --}}
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                📅 Calendario de Home Office -
-                {{ Carbon\Carbon::create($currentYear, $currentMonth, 1)->locale('es')->monthName }}
-            </h3>
+            <div class="flex items-center gap-2">
+                {{-- Botones de navegación (solo para managers/admin) --}}
+                @if($user->canManageAssignments())
+                    <a href="{{ route('dashboard', ['month' => $previousMonth->month, 'year' => $previousMonth->year]) }}"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                        title="Mes anterior">
+                        ←
+                    </a>
+                @endif
+
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 min-w-max">
+                    📅 Calendario -
+                    {{ Carbon\Carbon::create($currentYear, $currentMonth, 1)->locale('es')->monthName }}
+                    {{ $currentYear }}
+                </h3>
+
+                {{-- Botones de navegación (solo para managers/admin) --}}
+                @if($user->canManageAssignments())
+                    <a href="{{ route('dashboard', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                        title="Mes siguiente">
+                        →
+                    </a>
+                @endif
+            </div>
+
             @if($user->canManageAssignments())
                 <a href="{{ route('home-office.index') }}"
                     class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">
@@ -69,10 +95,10 @@
                 <div @if($hasAssignments && !$isWeekend)
                     onclick="openDayModal('{{ $dateKey }}', '{{ $currentDate->locale('es')->isoFormat('dddd D [de] MMMM') }}')"
                 @endif class="h-20 p-2 rounded-lg border-2 transition-all overflow-hidden
-                            {{ $isWeekend ? 'bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-60' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' }}
-                            {{ $isToday ? 'ring-2 ring-green-500 ring-offset-2 dark:ring-offset-gray-800' : '' }}
-                            {{ $hasAssignments && !$isWeekend ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-500' : '' }}
-                        ">
+                                {{ $isWeekend ? 'bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-60' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' }}
+                                {{ $isToday ? 'ring-2 ring-green-500 ring-offset-2 dark:ring-offset-gray-800' : '' }}
+                                {{ $hasAssignments && !$isWeekend ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-500' : '' }}
+                            ">
                     <div class="flex justify-between items-start">
                         <span
                             class="text-sm font-bold {{ $isToday ? 'text-green-600 dark:text-green-400' : ($isWeekend ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300') }}">

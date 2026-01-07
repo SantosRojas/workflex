@@ -10,11 +10,17 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $user = Auth::user();
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        
+        // Obtener mes y año desde query string, con validación
+        $currentMonth = (int) $request->get('month', now()->month);
+        $currentYear = (int) $request->get('year', now()->year);
+        
+        // Validar que sean valores válidos
+        $currentMonth = max(1, min(12, $currentMonth));
+        $currentYear = max(2020, min(2099, $currentYear));
 
         // Configuraciones del sistema
         $maxHomeOfficeDays = SystemSetting::getInt('max_home_office_days', 2);
