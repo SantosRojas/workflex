@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeOfficeController;
 use App\Http\Controllers\FlexibleScheduleController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,14 @@ Route::middleware('auth')->group(function () {
     // Rutas de Administración (solo admin)
     Route::get('/admin/settings', [SystemSettingController::class, 'index'])->name('admin.settings');
     Route::put('/admin/settings', [SystemSettingController::class, 'update'])->name('admin.settings.update');
+    
+    // Rutas de Gestión de Usuarios
+    Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/{user}/edit-password', [UserManagementController::class, 'editPassword'])->name('admin.users.edit-password');
+    Route::put('/admin/users/{user}/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.users.update-password');
+    Route::get('/admin/users/{user}/edit-role', [UserManagementController::class, 'editRole'])->name('admin.users.edit-role');
+    Route::put('/admin/users/{user}/update-role', [UserManagementController::class, 'updateRole'])->name('admin.users.update-role');
+    Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 require __DIR__.'/auth.php';
