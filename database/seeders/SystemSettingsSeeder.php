@@ -13,9 +13,12 @@ class SystemSettingsSeeder extends Seeder
      */
     public function run(): void
     {
-        SystemSetting::set('max_home_office_days', 2,1);
-        SystemSetting::set('max_people_per_day', 7,1);
-        SystemSetting::set('daily_work_minutes', 576,1);
-
+        SystemSetting::set('max_home_office_days', 2, 1);
+        SystemSetting::set('max_people_per_day', 7, 1);
+        SystemSetting::set('daily_work_minutes', 576, 1);
+        
+        // Fechas del período de planificación para enero
+        SystemSetting::set('january_planning_start_day', 5, 1);
+        SystemSetting::set('january_planning_end_day', 9, 1);
     }
 }

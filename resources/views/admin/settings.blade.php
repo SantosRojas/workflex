@@ -96,6 +96,54 @@
                             </div>
                         </div>
 
+                        {{-- Período de Planificación de Enero --}}
+                        <div class="mt-6 p-4 bg-orange-50 dark:bg-orange-900 rounded-lg">
+                            <h4 class="text-md font-semibold text-orange-800 dark:text-orange-200 mb-4">
+                                📅 Período de Planificación para Enero
+                            </h4>
+                            <p class="text-sm text-orange-600 dark:text-orange-300 mb-4">
+                                Configura los días del mes de enero en los que los empleados pueden planificar sus asignaciones.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {{-- Día de inicio --}}
+                                <div>
+                                    <label for="january_planning_start_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2">
+                                        🟢 Día de Inicio
+                                    </label>
+                                    <input type="number" 
+                                           name="january_planning_start_day" 
+                                           id="january_planning_start_day" 
+                                           value="{{ old('january_planning_start_day', $settings['january_planning_start_day']) }}"
+                                           min="1" 
+                                           max="31"
+                                           class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-lg font-bold text-center">
+                                    <p class="mt-2 text-xs text-orange-600 dark:text-orange-300">
+                                        Día del mes de enero donde inicia el período.
+                                    </p>
+                                </div>
+
+                                {{-- Día de fin --}}
+                                <div>
+                                    <label for="january_planning_end_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2">
+                                        🔴 Día de Fin
+                                    </label>
+                                    <input type="number" 
+                                           name="january_planning_end_day" 
+                                           id="january_planning_end_day" 
+                                           value="{{ old('january_planning_end_day', $settings['january_planning_end_day']) }}"
+                                           min="1" 
+                                           max="31"
+                                           class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-lg font-bold text-center">
+                                    <p class="mt-2 text-xs text-orange-600 dark:text-orange-300">
+                                        Día del mes de enero donde termina el período.
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-sm text-orange-700 dark:text-orange-400 font-semibold">
+                                📌 Período actual: Del {{ str_pad($settings['january_planning_start_day'], 2, '0', STR_PAD_LEFT) }}/01 al {{ str_pad($settings['january_planning_end_day'], 2, '0', STR_PAD_LEFT) }}/01
+                            </p>
+                        </div>
+
                         <div class="mt-6 flex justify-end">
                             <x-primary-button>
                                 💾 Guardar Configuración
@@ -144,6 +192,12 @@
                                                 @case('daily_work_minutes')
                                                     ⏱️ Minutos de Trabajo por Día
                                                     @break
+                                                @case('january_planning_start_day')
+                                                    📅 Inicio Planificación Enero
+                                                    @break
+                                                @case('january_planning_end_day')
+                                                    📅 Fin Planificación Enero
+                                                    @break
                                                 @default
                                                     {{ $setting->key }}
                                             @endswitch
@@ -153,6 +207,8 @@
                                                 {{ $setting->value }}
                                                 @if($setting->key === 'daily_work_minutes')
                                                     <span class="text-xs font-normal">({{ number_format($setting->value / 60, 1) }}h)</span>
+                                                @elseif($setting->key === 'january_planning_start_day' || $setting->key === 'january_planning_end_day')
+                                                    <span class="text-xs font-normal">de enero</span>
                                                 @endif
                                             </span>
                                         </td>
@@ -179,6 +235,7 @@
                     <li><strong>Días Home Office por Mes:</strong> Cada empleado puede solicitar hasta este número de días de trabajo remoto mensualmente.</li>
                     <li><strong>Personas Máximas por Día:</strong> Se bloquean nuevas asignaciones cuando se alcanza este límite en un día específico.</li>
                     <li><strong>Minutos de Trabajo por Día:</strong> Jornada laboral estándar en minutos. (Ejemplo: 480 min = 8 horas, 576 min = 9.6 horas)</li>
+                    <li><strong>Período de Planificación de Enero:</strong> Define los días del mes de enero en los que los empleados pueden realizar sus planificaciones. Para el resto de los meses, el período es la última semana del mes anterior.</li>
                 </ul>
             </div>
         </div>

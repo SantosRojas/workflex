@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 
 class PlanningPeriodService
@@ -9,15 +10,17 @@ class PlanningPeriodService
     /**
      * Obtener información del período de planificación para un mes específico
      * 
-     * - Para Enero: planificación del 05 al 09 de enero
+     * - Para Enero: planificación configurable desde el panel de admin
      * - Para otros meses: última semana del mes previo
      */
     public static function getPlanningPeriod(int $month, int $year): array
     {
-        // Excepción para enero: planificación del 05 al 09
+        // Excepción para enero: planificación configurable
         if ($month === 1) {
-            $planningStart = Carbon::create($year, 1, 5)->startOfDay();
-            $planningEnd = Carbon::create($year, 1, 9)->endOfDay();
+            $startDay = SystemSetting::getInt('january_planning_start_day', 5);
+            $endDay = SystemSetting::getInt('january_planning_end_day', 9);
+            $planningStart = Carbon::create($year, 1, $startDay)->startOfDay();
+            $planningEnd = Carbon::create($year, 1, $endDay)->endOfDay();
         } else {
             // Última semana del mes previo
             $prevMonth = Carbon::create($year, $month, 1)->subMonth();
