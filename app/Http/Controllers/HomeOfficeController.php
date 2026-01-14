@@ -241,4 +241,71 @@ class HomeOfficeController extends Controller
         
         return view('homeoffice.report', compact('assignments', 'byUser', 'byDate', 'month', 'year'));
     }
+
+    /**
+     * Exportar reporte a Excel (CSV)
+     */
+    public function exportExcel(Request $request)
+    {
+        $user = Auth::user();
+        
+        if (!$user->canManageAssignments()) {
+            abort(403);
+        }
+        
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+        
+        // Obtener asignaciones
+        $query = HomeOfficeAssignment::with(['user', 'assignedBy'])
+            ->forMonth($month, $year);
+            
+        if (!$user->isAdmin()) {
+            $query->whereHas('user', fn($q) => $q->where('work_area', $user->work_area));
+        }
+        
+        $assignments = $query->orderBy('date')->get();
+        
+        // Crear contenido CSV con BOM para Excel
+        $monthName = Carbon::create($year, $month, 1)->locale('es')->monthName;
+        $filename = "home_office_{$monthName}_{$year}.csv";
+        
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+        
+        $callback = function() use ($assignments, $monthName, $year) {
+            $file = fopen('php://output', 'w');
+            
+            // BOM para UTF-8 en Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Encabezados
+            fputcsv($file, [
+                'Empleado',
+                'Área',
+                'Fecha',
+                'Día',
+                'Asignado por',
+                'Fecha de asignación'
+            ], ';');
+            
+            // Datos
+            foreach ($assignments as $assignment) {
+                fputcsv($file, [
+                    $assignment->user->name . ' ' . ($assignment->user->last_name ?? ''),
+                    $assignment->user->work_area ?? 'Sin área',
+                    $assignment->date->format('d/m/Y'),
+                    $assignment->date->locale('es')->dayName,
+                    $assignment->assignedBy->name ?? 'Sistema',
+                    $assignment->created_at->format('d/m/Y H:i')
+                ], ';');
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
 }

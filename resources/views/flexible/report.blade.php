@@ -5,10 +5,21 @@
                 {{ __('Reporte Horario Flexible') }} -
                 {{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }} {{ $year }}
             </h2>
-            <a href="{{ route('flexible-schedule.index', ['month' => $month, 'year' => $year]) }}"
-                class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500">
-                ← Volver al Listado
-            </a>
+            <div class="flex gap-2">
+                <a href="{{ route('flexible-schedule.export', ['month' => $month, 'year' => $year]) }}"
+                    class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    Descargar Excel
+                </a>
+                <a href="{{ route('flexible-schedule.index', ['month' => $month, 'year' => $year]) }}"
+                    class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500">
+                    ← Volver al Listado
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -20,7 +31,7 @@
                 @php
                     $prevMonth = Carbon\Carbon::create($year, $month, 1)->subMonth();
                     $nextMonth = Carbon\Carbon::create($year, $month, 1)->addMonth();
-                    
+
                     // Calcular estadísticas dinámicas
                     $uniqueSchedules = $byTime->count();
                     $earliestTime = $assignments->min('start_time');
@@ -82,19 +93,28 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Empleado
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Área
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Hora de Entrada
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Hora de Almuerzo
+                                        </th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Hora de Salida
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Asignado por
                                         </th>
                                     </tr>
@@ -105,10 +125,10 @@
                                             $dailyWorkMinutes = App\Models\SystemSetting::getInt('daily_work_minutes', 480);
                                             $lunchMinutes = 60; // 1 hora de almuerzo
                                             $totalMinutes = $dailyWorkMinutes + $lunchMinutes;
-                                            
+
                                             $startTime = Carbon\Carbon::createFromTimeString($assignment->start_time);
                                             $endTime = $startTime->copy()->addMinutes($totalMinutes);
-                                            
+
                                             // Calcular horas de trabajo para mostrar
                                             $workHours = floor($dailyWorkMinutes / 60);
                                             $workMins = $dailyWorkMinutes % 60;
@@ -126,12 +146,21 @@
                                                 {{ $assignment->user->work_area }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-semibold">
+                                                <span
+                                                    class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-semibold">
                                                     {{ substr($assignment->start_time, 0, 5) }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold">
+                                                <span
+                                                    class="px-3 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full text-sm font-semibold">
+                                                    🍽
+                                                    {{ $assignment->lunch_start_time ? substr($assignment->lunch_start_time, 0, 5) : '12:00' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span
+                                                    class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold">
                                                     {{ $endTime->format('H:i') }}
                                                 </span>
                                             </td>

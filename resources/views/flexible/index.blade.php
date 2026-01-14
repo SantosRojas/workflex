@@ -126,9 +126,9 @@
                                             <button type="button"
                                                 onclick="document.getElementById('start_time').value = '{{ $time }}'"
                                                 class="px-4 py-2 rounded-lg text-sm font-medium border-2 transition-all
-                                                                    {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
-                                                                    {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
-                                                                    {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
+                                                                                            {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
+                                                                                            {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
+                                                                                            {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
                                                 {{ $time }}
                                             </button>
                                         @endforeach
@@ -140,6 +140,32 @@
                                         class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                         Selecciona un horario predefinido o ingresa uno personalizado (07:00 - 11:59 AM)
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <x-input-label for="lunch_start_time" value="Hora de Almuerzo" />
+
+                                    {{-- Botones de horarios de almuerzo rápidos --}}
+                                    <div class="mt-2 flex flex-wrap gap-2 mb-3">
+                                        @foreach($allowedLunchTimes as $time)
+                                            <button type="button"
+                                                onclick="document.getElementById('lunch_start_time').value = '{{ $time }}'"
+                                                class="px-4 py-2 rounded-lg text-sm font-medium border-2 transition-all
+                                                                                            {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
+                                                                                            {{ $time == '12:30' ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-300' : '' }}
+                                                                                            {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}">
+                                                {{ $time }}
+                                            </button>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Campo de texto para horario de almuerzo personalizado --}}
+                                    <input type="time" name="lunch_start_time" id="lunch_start_time" min="12:00" max="14:59"
+                                        value="12:00"
+                                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        Selecciona la hora de inicio del almuerzo (12:00 - 14:59)
                                     </p>
                                 </div>
 
@@ -167,16 +193,22 @@
                                     @foreach($assignments->sortBy('start_time') as $assignment)
                                         @php
                                             $assignmentTime = substr($assignment->start_time, 0, 5);
+                                            $lunchTime = $assignment->lunch_start_time ? substr($assignment->lunch_start_time, 0, 5) : '12:00';
                                         @endphp
                                         <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                             <div class="flex items-center space-x-3">
                                                 <span
                                                     class="px-3 py-1 rounded-full text-sm font-semibold
-                                                                    {{ $assignmentTime == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
-                                                                    {{ $assignmentTime == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
-                                                                    {{ $assignmentTime == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
-                                                                    {{ !in_array($assignmentTime, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
+                                                                                                    {{ $assignmentTime == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
+                                                                                                    {{ $assignmentTime == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
+                                                                                                    {{ $assignmentTime == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
+                                                                                                    {{ !in_array($assignmentTime, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
                                                     {{ $assignmentTime }}
+                                                </span>
+                                                <span
+                                                    class="px-2 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100"
+                                                    title="Hora de almuerzo">
+                                                    🍽 {{ $lunchTime }}
                                                 </span>
                                                 <div>
                                                     <span
@@ -191,7 +223,7 @@
                                                 <div class="flex items-center space-x-2">
                                                     {{-- Botón editar --}}
                                                     <button type="button"
-                                                        onclick="openEditModal({{ $assignment->id }}, '{{ $assignmentTime }}')"
+                                                        onclick="openEditModal({{ $assignment->id }}, '{{ $assignmentTime }}', '{{ $lunchTime }}')"
                                                         class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -231,10 +263,10 @@
                                             <div class="flex items-center space-x-2">
                                                 <span
                                                     class="px-2 py-1 rounded text-xs font-semibold
-                                                                    {{ $time == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
-                                                                    {{ $time == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
-                                                                    {{ $time == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
-                                                                    {{ !in_array($time, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
+                                                                                                    {{ $time == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
+                                                                                                    {{ $time == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
+                                                                                                    {{ $time == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
+                                                                                                    {{ !in_array($time, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
                                                     {{ $time }}
                                                 </span>
                                                 <span
@@ -355,15 +387,36 @@
                                 <button type="button"
                                     onclick="document.getElementById('edit_start_time').value = '{{ $time }}'"
                                     class="px-3 py-1 rounded-lg text-sm font-medium border-2 transition-all
-                                                {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
-                                                {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
-                                                {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
+                                                        {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
+                                                        {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
+                                                        {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
                                     {{ $time }}
                                 </button>
                             @endforeach
                         </div>
 
                         <input type="time" name="start_time" id="edit_start_time" required min="07:00" max="10:59"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    </div>
+
+                    <div class="mb-4">
+                        <x-input-label for="edit_lunch_start_time" value="Hora de Almuerzo" />
+
+                        {{-- Botones de horarios de almuerzo rápidos --}}
+                        <div class="mt-2 flex flex-wrap gap-2 mb-3">
+                            @foreach($allowedLunchTimes as $time)
+                                <button type="button"
+                                    onclick="document.getElementById('edit_lunch_start_time').value = '{{ $time }}'"
+                                    class="px-3 py-1 rounded-lg text-sm font-medium border-2 transition-all
+                                                        {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
+                                                        {{ $time == '12:30' ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-300' : '' }}
+                                                        {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}">
+                                    {{ $time }}
+                                </button>
+                            @endforeach
+                        </div>
+
+                        <input type="time" name="lunch_start_time" id="edit_lunch_start_time" min="12:00" max="14:59"
                             class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                     </div>
 
@@ -382,9 +435,10 @@
     </div>
 
     <script>
-        function openEditModal(id, currentTime) {
+        function openEditModal(id, currentTime, currentLunchTime) {
             document.getElementById('editForm').action = '/flexible-schedule/' + id;
             document.getElementById('edit_start_time').value = currentTime;
+            document.getElementById('edit_lunch_start_time').value = currentLunchTime || '12:00';
             document.getElementById('editModal').classList.remove('hidden');
         }
 

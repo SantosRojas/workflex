@@ -20,11 +20,28 @@ class FlexibleScheduleAssignment extends Model
     ];
 
     /**
+     * Horarios de almuerzo predefinidos
+     */
+    public const ALLOWED_LUNCH_TIMES = [
+        '12:00',
+        '12:30',
+        '13:00'
+    ];
+
+    /**
      * Obtener la hora de inicio formateada
      */
     public function getStartTimeFormattedAttribute(): string
     {
         return substr($this->start_time, 0, 5);
+    }
+
+    /**
+     * Obtener la hora de almuerzo formateada
+     */
+    public function getLunchStartTimeFormattedAttribute(): string
+    {
+        return $this->lunch_start_time ? substr($this->lunch_start_time, 0, 5) : '12:00';
     }
 
     public function user()

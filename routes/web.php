@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/home-office', [HomeOfficeController::class, 'store'])->name('home-office.store');
     Route::delete('/home-office/{homeOffice}', [HomeOfficeController::class, 'destroy'])->name('home-office.destroy');
     Route::get('/home-office/report', [HomeOfficeController::class, 'report'])->name('home-office.report');
+    Route::get('/home-office/report/export', [HomeOfficeController::class, 'exportExcel'])->name('home-office.export');
 
     // Rutas de Horario Flexible
     Route::get('/flexible-schedule', [FlexibleScheduleController::class, 'index'])->name('flexible-schedule.index');
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/flexible-schedule/{flexibleSchedule}', [FlexibleScheduleController::class, 'update'])->name('flexible-schedule.update');
     Route::delete('/flexible-schedule/{flexibleSchedule}', [FlexibleScheduleController::class, 'destroy'])->name('flexible-schedule.destroy');
     Route::get('/flexible-schedule/report', [FlexibleScheduleController::class, 'report'])->name('flexible-schedule.report');
+    Route::get('/flexible-schedule/report/export', [FlexibleScheduleController::class, 'exportExcel'])->name('flexible-schedule.export');
 
     // Rutas de Administración (solo admin)
     Route::get('/admin/settings', [SystemSettingController::class, 'index'])->name('admin.settings');

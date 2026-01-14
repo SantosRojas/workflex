@@ -63,6 +63,7 @@ class FlexibleScheduleController extends Controller
         
         // Horarios permitidos
         $allowedTimes = FlexibleScheduleAssignment::ALLOWED_START_TIMES;
+        $allowedLunchTimes = FlexibleScheduleAssignment::ALLOWED_LUNCH_TIMES;
         
         // Verificar período de planificación
         $planningPeriod = PlanningPeriodService::getPlanningPeriodInfo($month, $year);
@@ -76,6 +77,7 @@ class FlexibleScheduleController extends Controller
             'month',
             'year',
             'allowedTimes',
+            'allowedLunchTimes',
             'planningPeriod',
             'areaCanHaveFlexible'
         ));
@@ -93,8 +95,10 @@ class FlexibleScheduleController extends Controller
             'month' => 'required|integer|between:1,12',
             'year' => 'required|integer|min:2024',
             'start_time' => ['required', 'regex:/^(0[7-9]|1[0-1]):[0-5][0-9]$/'],
+            'lunch_start_time' => ['nullable', 'regex:/^(1[2-4]):[0-5][0-9]$/'],
         ], [
             'start_time.regex' => 'El horario debe estar entre 07:00 y 11:59 AM en formato HH:MM',
+            'lunch_start_time.regex' => 'La hora de almuerzo debe estar entre 12:00 y 14:59 en formato HH:MM',
         ]);
         
         $targetUser = User::findOrFail($request->user_id);
@@ -139,6 +143,7 @@ class FlexibleScheduleController extends Controller
             'month' => $request->month,
             'year' => $request->year,
             'start_time' => $request->start_time,
+            'lunch_start_time' => $request->lunch_start_time ?? '12:00',
         ]);
         
         return back()->with('success', 'Horario flexible asignado correctamente.');
@@ -153,8 +158,10 @@ class FlexibleScheduleController extends Controller
         
         $request->validate([
             'start_time' => ['required', 'regex:/^(0[7-9]|1[0-1]):[0-5][0-9]$/'],
+            'lunch_start_time' => ['nullable', 'regex:/^(1[2-4]):[0-5][0-9]$/'],
         ], [
             'start_time.regex' => 'El horario debe estar entre 07:00 y 11:59 AM en formato HH:MM',
+            'lunch_start_time.regex' => 'La hora de almuerzo debe estar entre 12:00 y 14:59 en formato HH:MM',
         ]);
         
         $month = $flexibleSchedule->month;
@@ -177,6 +184,7 @@ class FlexibleScheduleController extends Controller
         
         $flexibleSchedule->update([
             'start_time' => $request->start_time,
+            'lunch_start_time' => $request->lunch_start_time ?? $flexibleSchedule->lunch_start_time,
             'assigned_by' => $user->id,
         ]);
         
@@ -244,5 +252,83 @@ class FlexibleScheduleController extends Controller
         $byArea = $assignments->groupBy(fn($a) => $a->user->work_area);
         
         return view('flexible.report', compact('assignments', 'byTime', 'byArea', 'month', 'year'));
+    }
+
+    /**
+     * Exportar reporte a Excel (CSV)
+     */
+    public function exportExcel(Request $request)
+    {
+        $user = Auth::user();
+        
+        if (!$user->canManageAssignments()) {
+            abort(403);
+        }
+        
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+        
+        // Obtener asignaciones
+        $query = FlexibleScheduleAssignment::with(['user', 'assignedBy'])
+            ->forMonth($month, $year);
+            
+        if (!$user->isAdmin()) {
+            $query->whereHas('user', fn($q) => $q->where('work_area', $user->work_area));
+        }
+        
+        $assignments = $query->orderBy('start_time')->get();
+        
+        // Crear contenido CSV con BOM para Excel
+        $monthName = Carbon::create($year, $month, 1)->locale('es')->monthName;
+        $filename = "horario_flexible_{$monthName}_{$year}.csv";
+        
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+        
+        $callback = function() use ($assignments) {
+            $file = fopen('php://output', 'w');
+            
+            // BOM para UTF-8 en Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Encabezados
+            fputcsv($file, [
+                'Empleado',
+                'Email',
+                'Área',
+                'Hora de Entrada',
+                'Hora de Almuerzo',
+                'Hora de Salida',
+                'Asignado por',
+                'Fecha de asignación'
+            ], ';');
+            
+            // Datos
+            foreach ($assignments as $assignment) {
+                $dailyWorkMinutes = \App\Models\SystemSetting::getInt('daily_work_minutes', 480);
+                $lunchMinutes = 60;
+                $totalMinutes = $dailyWorkMinutes + $lunchMinutes;
+                
+                $startTime = Carbon::createFromTimeString($assignment->start_time);
+                $endTime = $startTime->copy()->addMinutes($totalMinutes);
+                
+                fputcsv($file, [
+                    $assignment->user->name . ' ' . ($assignment->user->last_name ?? ''),
+                    $assignment->user->email,
+                    $assignment->user->work_area ?? 'Sin área',
+                    substr($assignment->start_time, 0, 5),
+                    $assignment->lunch_start_time ? substr($assignment->lunch_start_time, 0, 5) : '12:00',
+                    $endTime->format('H:i'),
+                    $assignment->assignedBy->name ?? 'Sistema',
+                    $assignment->created_at->format('d/m/Y H:i')
+                ], ';');
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
     }
 }
