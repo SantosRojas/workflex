@@ -126,9 +126,9 @@
                                             <button type="button"
                                                 onclick="document.getElementById('start_time').value = '{{ $time }}'"
                                                 class="px-4 py-2 rounded-lg text-sm font-medium border-2 transition-all
-                                                                                            {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
-                                                                                            {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
-                                                                                            {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
+                                                                                                                                {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
+                                                                                                                                {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
+                                                                                                                                {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
                                                 {{ $time }}
                                             </button>
                                         @endforeach
@@ -152,20 +152,22 @@
                                             <button type="button"
                                                 onclick="document.getElementById('lunch_start_time').value = '{{ $time }}'"
                                                 class="px-4 py-2 rounded-lg text-sm font-medium border-2 transition-all
-                                                                                            {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
-                                                                                            {{ $time == '12:30' ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-300' : '' }}
-                                                                                            {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}">
+                                                                {{ $time == '11:00' ? 'border-lime-300 bg-lime-50 text-lime-700 hover:bg-lime-100 dark:border-lime-600 dark:bg-lime-900 dark:text-lime-300' : '' }}
+                                                                {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
+                                                                {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}
+                                                                {{ $time == '14:00' ? 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100 dark:border-purple-600 dark:bg-purple-900 dark:text-purple-300' : '' }}
+                                                                {{ $time == '15:00' ? 'border-pink-300 bg-pink-50 text-pink-700 hover:bg-pink-100 dark:border-pink-600 dark:bg-pink-900 dark:text-pink-300' : '' }}">
                                                 {{ $time }}
                                             </button>
                                         @endforeach
                                     </div>
 
                                     {{-- Campo de texto para horario de almuerzo personalizado --}}
-                                    <input type="time" name="lunch_start_time" id="lunch_start_time" min="12:00" max="14:59"
+                                    <input type="time" name="lunch_start_time" id="lunch_start_time" min="11:00" max="15:59"
                                         value="12:00"
                                         class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                        Selecciona la hora de inicio del almuerzo (12:00 - 14:59)
+                                        Selecciona la hora de inicio del almuerzo (11:00 - 15:59)
                                     </p>
                                 </div>
 
@@ -199,10 +201,10 @@
                                             <div class="flex items-center space-x-3">
                                                 <span
                                                     class="px-3 py-1 rounded-full text-sm font-semibold
-                                                                                                    {{ $assignmentTime == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
-                                                                                                    {{ $assignmentTime == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
-                                                                                                    {{ $assignmentTime == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
-                                                                                                    {{ !in_array($assignmentTime, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
+                                                                                                                                                    {{ $assignmentTime == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
+                                                                                                                                                    {{ $assignmentTime == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
+                                                                                                                                                    {{ $assignmentTime == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
+                                                                                                                                                    {{ !in_array($assignmentTime, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
                                                     {{ $assignmentTime }}
                                                 </span>
                                                 <span
@@ -263,10 +265,10 @@
                                             <div class="flex items-center space-x-2">
                                                 <span
                                                     class="px-2 py-1 rounded text-xs font-semibold
-                                                                                                    {{ $time == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
-                                                                                                    {{ $time == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
-                                                                                                    {{ $time == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
-                                                                                                    {{ !in_array($time, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
+                                                                                                                                                    {{ $time == '08:00' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : '' }}
+                                                                                                                                                    {{ $time == '08:30' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' : '' }}
+                                                                                                                                                    {{ $time == '09:00' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : '' }}
+                                                                                                                                                    {{ !in_array($time, ['08:00', '08:30', '09:00']) ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' : '' }}">
                                                     {{ $time }}
                                                 </span>
                                                 <span
@@ -310,12 +312,18 @@
 
                         @php
                             $status = $planningPeriod['status'] ?? 'before';
+                            // Calcular el siguiente período para el estado 'ended'
+                            if ($status === 'ended') {
+                                $nextMonth = $month == 12 ? 1 : $month + 1;
+                                $nextYear = $month == 12 ? $year + 1 : $year;
+                                $nextPeriod = App\Services\PlanningPeriodService::getPlanningPeriod($nextMonth, $nextYear);
+                            }
                         @endphp
 
                         @if($status === 'just_ended')
                             {{-- Período recién terminado (menos de 3 días) --}}
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                ⛔ El período de asignación ya finalizó
+                                ⛔ El período de asignación finalizó
                             </h3>
 
                             <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -336,6 +344,31 @@
 
                             <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
                                 Las asignaciones para este mes ya no pueden ser modificadas.
+                            </p>
+                        @elseif($status === 'ended')
+                            {{-- Período terminado hace más de 3 días - Mostrar siguiente período --}}
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                Aún no es momento de asignar
+                            </h3>
+
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                El período de planificación para
+                                <strong>{{ Carbon\Carbon::create($nextYear, $nextMonth, 1)->locale('es')->monthName }}
+                                    {{ $nextYear }}</strong>
+                                aún no está activo.
+                            </p>
+
+                            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
+                                <p class="text-blue-800 dark:text-blue-200">
+                                    <span class="font-semibold">📅 Período de planificación:</span>
+                                    <br>
+                                    <span class="text-lg">{{ $nextPeriod['start']->format('d/m/Y') }} -
+                                        {{ $nextPeriod['end']->format('d/m/Y') }}</span>
+                                </p>
+                            </div>
+
+                            <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                                Regresa durante el período indicado para realizar las asignaciones de horario flexible.
                             </p>
                         @else
                             {{-- Período aún no comienza --}}
@@ -387,9 +420,9 @@
                                 <button type="button"
                                     onclick="document.getElementById('edit_start_time').value = '{{ $time }}'"
                                     class="px-3 py-1 rounded-lg text-sm font-medium border-2 transition-all
-                                                        {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
-                                                        {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
-                                                        {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
+                                                                    {{ $time == '08:00' ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-600 dark:bg-green-900 dark:text-green-300' : '' }}
+                                                                    {{ $time == '08:30' ? 'border-yellow-300 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : '' }}
+                                                                    {{ $time == '09:00' ? 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900 dark:text-blue-300' : '' }}">
                                     {{ $time }}
                                 </button>
                             @endforeach
@@ -408,15 +441,17 @@
                                 <button type="button"
                                     onclick="document.getElementById('edit_lunch_start_time').value = '{{ $time }}'"
                                     class="px-3 py-1 rounded-lg text-sm font-medium border-2 transition-all
-                                                        {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
-                                                        {{ $time == '12:30' ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-900 dark:text-amber-300' : '' }}
-                                                        {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}">
+                                            {{ $time == '11:00' ? 'border-lime-300 bg-lime-50 text-lime-700 hover:bg-lime-100 dark:border-lime-600 dark:bg-lime-900 dark:text-lime-300' : '' }}
+                                            {{ $time == '12:00' ? 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-600 dark:bg-orange-900 dark:text-orange-300' : '' }}
+                                            {{ $time == '13:00' ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-600 dark:bg-red-900 dark:text-red-300' : '' }}
+                                            {{ $time == '14:00' ? 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100 dark:border-purple-600 dark:bg-purple-900 dark:text-purple-300' : '' }}
+                                            {{ $time == '15:00' ? 'border-pink-300 bg-pink-50 text-pink-700 hover:bg-pink-100 dark:border-pink-600 dark:bg-pink-900 dark:text-pink-300' : '' }}">
                                     {{ $time }}
                                 </button>
                             @endforeach
                         </div>
 
-                        <input type="time" name="lunch_start_time" id="edit_lunch_start_time" min="12:00" max="14:59"
+                        <input type="time" name="lunch_start_time" id="edit_lunch_start_time" min="11:00" max="15:59"
                             class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                     </div>
 

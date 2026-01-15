@@ -103,7 +103,8 @@
                                         📅 Selecciona días hábiles desde hoy hasta fin de
                                         {{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }}
                                     </p>
-                                    <p id="days-available-info" class="mt-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 hidden">
+                                    <p id="days-available-info"
+                                        class="mt-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 hidden">
                                     </p>
                                     <div id="selected-dates-preview" class="mt-2 flex flex-wrap gap-2"></div>
                                 </div>
@@ -191,12 +192,18 @@
 
                         @php
                             $status = $planningPeriod['status'] ?? 'before';
+                            // Calcular el siguiente período para el estado 'ended'
+                            if ($status === 'ended') {
+                                $nextMonth = $month == 12 ? 1 : $month + 1;
+                                $nextYear = $month == 12 ? $year + 1 : $year;
+                                $nextPeriod = App\Services\PlanningPeriodService::getPlanningPeriod($nextMonth, $nextYear);
+                            }
                         @endphp
 
                         @if($status === 'just_ended')
                             {{-- Período recién terminado (menos de 3 días) --}}
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                ⛔ El período de asignación ya finalizó
+                                ⛔ El período de asignación finalizó
                             </h3>
 
                             <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -217,6 +224,31 @@
 
                             <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
                                 Las asignaciones para este mes ya no pueden ser modificadas.
+                            </p>
+                        @elseif($status === 'ended')
+                            {{-- Período terminado hace más de 3 días - Mostrar siguiente período --}}
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                Aún no es momento de asignar
+                            </h3>
+
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                El período de planificación para
+                                <strong>{{ Carbon\Carbon::create($nextYear, $nextMonth, 1)->locale('es')->monthName }}
+                                    {{ $nextYear }}</strong>
+                                aún no está activo.
+                            </p>
+
+                            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
+                                <p class="text-blue-800 dark:text-blue-200">
+                                    <span class="font-semibold">📅 Período de planificación:</span>
+                                    <br>
+                                    <span class="text-lg">{{ $nextPeriod['start']->format('d/m/Y') }} -
+                                        {{ $nextPeriod['end']->format('d/m/Y') }}</span>
+                                </p>
+                            </div>
+
+                            <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                                Regresa durante el período indicado para realizar las asignaciones de home office.
                             </p>
                         @else
                             {{-- Período aún no comienza --}}
@@ -267,7 +299,7 @@
                 const userSelect = document.getElementById('user_id');
                 const daysAvailableInfo = document.getElementById('days-available-info');
                 const maxDaysPerMonth = {{ $maxDaysPerMonth }};
-                
+
                 let fp = null;
                 let maxSelectableDates = 0;
 
@@ -294,7 +326,7 @@
                                 // Remover la última fecha agregada
                                 const limitedDates = selectedDates.slice(0, maxSelectableDates);
                                 instance.setDate(limitedDates);
-                                
+
                                 // Mostrar alerta
                                 showLimitAlert();
                                 return;
@@ -302,23 +334,23 @@
                             updatePreview(selectedDates, instance);
                         }
                     });
-                    
+
                     // Escuchar cambios en el select de empleado
-                    userSelect.addEventListener('change', function() {
+                    userSelect.addEventListener('change', function () {
                         const selectedOption = this.options[this.selectedIndex];
                         const daysUsed = parseInt(selectedOption.dataset.daysUsed) || 0;
                         maxSelectableDates = maxDaysPerMonth - daysUsed;
-                        
+
                         // Limpiar fechas seleccionadas
                         fp.clear();
                         previewContainer.innerHTML = '';
-                        
+
                         if (this.value) {
                             // Habilitar el selector de fechas
                             datesInput.disabled = false;
                             datesInput.placeholder = 'Selecciona una o más fechas...';
                             fp.set('clickOpens', true);
-                            
+
                             // Mostrar días disponibles
                             if (maxSelectableDates > 0) {
                                 daysAvailableInfo.textContent = `✨ Puedes seleccionar hasta ${maxSelectableDates} día(s) para este empleado`;
@@ -340,28 +372,28 @@
                             daysAvailableInfo.classList.add('hidden');
                         }
                     });
-                    
+
                     // Click en el input abre el calendario si está habilitado
-                    datesInput.addEventListener('click', function() {
+                    datesInput.addEventListener('click', function () {
                         if (!this.disabled && fp) {
                             fp.open();
                         }
                     });
-                    
+
                     function showLimitAlert() {
                         // Crear alerta temporal
                         const alert = document.createElement('div');
                         alert.className = 'fixed top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg shadow-lg z-50 animate-pulse';
                         alert.innerHTML = `
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Solo puedes seleccionar ${maxSelectableDates} día(s) para este empleado</span>
-                            </div>
-                        `;
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>Solo puedes seleccionar ${maxSelectableDates} día(s) para este empleado</span>
+                                </div>
+                            `;
                         document.body.appendChild(alert);
-                        
+
                         setTimeout(() => {
                             alert.remove();
                         }, 3000);
@@ -388,13 +420,13 @@
                             });
 
                             badge.innerHTML = `
-                                    ${dateText}
-                                    <button type="button" class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-700" data-index="${index}">
-                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </button>
-                                `;
+                                        ${dateText}
+                                        <button type="button" class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-700" data-index="${index}">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                    `;
 
                             badge.querySelector('button').addEventListener('click', function () {
                                 const newDates = fpInstance.selectedDates.filter((_, i) => i !== index);

@@ -23,9 +23,11 @@ class FlexibleScheduleAssignment extends Model
      * Horarios de almuerzo predefinidos
      */
     public const ALLOWED_LUNCH_TIMES = [
+        '11:00',
         '12:00',
-        '12:30',
-        '13:00'
+        '13:00',
+        '14:00',
+        '15:00'
     ];
 
     /**
