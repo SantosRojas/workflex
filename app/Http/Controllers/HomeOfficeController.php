@@ -73,7 +73,7 @@ class HomeOfficeController extends Controller
     }
 
     /**
-     * Almacenar una nueva asignación de home office
+     * Almacenar una nueva asignación de home office (soporta múltiples fechas)
      */
     public function store(Request $request)
     {
@@ -81,23 +81,17 @@ class HomeOfficeController extends Controller
         
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'date' => 'required|date|after_or_equal:today',
+            'dates' => 'required|string',
         ]);
         
         $targetUser = User::findOrFail($request->user_id);
-        $date = Carbon::parse($request->date);
-        $month = $date->month;
-        $year = $date->year;
         
-        // Verificar período de planificación (admin puede saltarse esta restricción)
-        if (!$user->isAdmin() && !PlanningPeriodService::canPlanForMonth($month, $year)) {
-            $periodInfo = PlanningPeriodService::getPlanningPeriodInfo($month, $year);
-            return back()->withErrors(['date' => "No estás en el período de planificación. {$periodInfo['message']}"]);
-        }
+        // Parsear las fechas (vienen separadas por coma del flatpickr)
+        $datesInput = array_map('trim', explode(',', $request->dates));
+        $datesInput = array_filter($datesInput); // Eliminar vacíos
         
-        // Validar que el manager solo pueda asignar a usuarios de su área
-        if (!$user->isAdmin() && $targetUser->work_area !== $user->work_area) {
-            return back()->withErrors(['user_id' => 'Solo puedes asignar home office a personas de tu área.']);
+        if (empty($datesInput)) {
+            return back()->withErrors(['dates' => 'Debes seleccionar al menos una fecha.']);
         }
         
         // Validar que el usuario tenga permiso para asignar
@@ -105,37 +99,112 @@ class HomeOfficeController extends Controller
             return back()->withErrors(['error' => 'No tienes permisos para realizar esta acción.']);
         }
         
-        // Verificar límite de días por mes para el usuario
+        // Validar que el manager solo pueda asignar a usuarios de su área
+        if (!$user->isAdmin() && $targetUser->work_area !== $user->work_area) {
+            return back()->withErrors(['user_id' => 'Solo puedes asignar home office a personas de tu área.']);
+        }
+        
         $maxDaysPerMonth = SystemSetting::getInt('max_home_office_days', 2);
-        $currentDays = $targetUser->homeOfficeDaysInMonth($month, $year);
+        $maxPeoplePerDay = SystemSetting::getInt('max_people_per_day', 7);
         
-        if ($currentDays >= $maxDaysPerMonth) {
-            return back()->withErrors(['date' => "El usuario ya tiene {$maxDaysPerMonth} días de home office asignados este mes."]);
+        $errors = [];
+        $assignedDates = [];
+        $skippedDates = [];
+        
+        // Agrupar fechas por mes para validar límites mensuales
+        $datesByMonth = [];
+        foreach ($datesInput as $dateStr) {
+            try {
+                $date = Carbon::parse($dateStr);
+                if ($date->lt(Carbon::today())) {
+                    $skippedDates[] = $date->format('d/m/Y') . ' (fecha pasada)';
+                    continue;
+                }
+                $monthKey = $date->format('Y-m');
+                $datesByMonth[$monthKey][] = $date;
+            } catch (\Exception $e) {
+                $errors[] = "Fecha inválida: {$dateStr}";
+            }
         }
         
-        // Verificar límite de personas por día
-        if (!HomeOfficeAssignment::canAddMoreForDate($date)) {
-            $maxPeoplePerDay = SystemSetting::getInt('max_people_per_day', 7);
-            return back()->withErrors(['date' => "Ya hay {$maxPeoplePerDay} personas en home office para esta fecha."]);
-        }
-        
-        // Verificar que no exista ya una asignación para ese día
-        $exists = HomeOfficeAssignment::where('user_id', $targetUser->id)
-            ->whereDate('date', $date)
-            ->exists();
+        foreach ($datesByMonth as $monthKey => $dates) {
+            $firstDate = $dates[0];
+            $month = $firstDate->month;
+            $year = $firstDate->year;
             
-        if ($exists) {
-            return back()->withErrors(['date' => 'Este usuario ya tiene home office asignado para esta fecha.']);
+            // Verificar período de planificación (admin puede saltarse esta restricción)
+            if (!$user->isAdmin() && !PlanningPeriodService::canPlanForMonth($month, $year)) {
+                $periodInfo = PlanningPeriodService::getPlanningPeriodInfo($month, $year);
+                $errors[] = "No estás en el período de planificación para " . $firstDate->locale('es')->monthName . ". {$periodInfo['message']}";
+                continue;
+            }
+            
+            // Verificar límite de días por mes para el usuario
+            $currentDays = $targetUser->homeOfficeDaysInMonth($month, $year);
+            $availableDays = $maxDaysPerMonth - $currentDays;
+            
+            if ($availableDays <= 0) {
+                $errors[] = "El usuario ya tiene {$maxDaysPerMonth} días de home office asignados en " . $firstDate->locale('es')->monthName . ".";
+                continue;
+            }
+            
+            $assignedInThisMonth = 0;
+            foreach ($dates as $date) {
+                // Verificar si ya alcanzó el límite con las asignaciones de esta solicitud
+                if ($assignedInThisMonth >= $availableDays) {
+                    $skippedDates[] = $date->format('d/m/Y') . ' (límite mensual alcanzado)';
+                    continue;
+                }
+                
+                // Verificar límite de personas por día
+                if (!HomeOfficeAssignment::canAddMoreForDate($date)) {
+                    $skippedDates[] = $date->format('d/m/Y') . ' (día lleno)';
+                    continue;
+                }
+                
+                // Verificar que no exista ya una asignación para ese día
+                $exists = HomeOfficeAssignment::where('user_id', $targetUser->id)
+                    ->whereDate('date', $date)
+                    ->exists();
+                    
+                if ($exists) {
+                    $skippedDates[] = $date->format('d/m/Y') . ' (ya asignado)';
+                    continue;
+                }
+                
+                // Crear la asignación
+                HomeOfficeAssignment::create([
+                    'user_id' => $targetUser->id,
+                    'assigned_by' => $user->id,
+                    'date' => $date,
+                ]);
+                
+                $assignedDates[] = $date->format('d/m/Y');
+                $assignedInThisMonth++;
+            }
         }
         
-        // Crear la asignación
-        HomeOfficeAssignment::create([
-            'user_id' => $targetUser->id,
-            'assigned_by' => $user->id,
-            'date' => $date,
-        ]);
+        // Construir mensaje de respuesta
+        $messages = [];
         
-        return back()->with('success', 'Día de home office asignado correctamente.');
+        if (count($assignedDates) > 0) {
+            $messages[] = 'Días asignados: ' . implode(', ', $assignedDates);
+        }
+        
+        if (count($skippedDates) > 0) {
+            $messages[] = 'Días omitidos: ' . implode(', ', $skippedDates);
+        }
+        
+        if (count($errors) > 0) {
+            return back()->withErrors(['dates' => implode(' ', $errors)])
+                ->with('success', count($assignedDates) > 0 ? implode('. ', $messages) : null);
+        }
+        
+        if (count($assignedDates) === 0) {
+            return back()->withErrors(['dates' => 'No se pudo asignar ninguna fecha. ' . implode(', ', $skippedDates)]);
+        }
+        
+        return back()->with('success', implode('. ', $messages));
     }
 
     /**

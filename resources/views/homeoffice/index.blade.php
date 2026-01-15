@@ -94,15 +94,16 @@
                                 </div>
 
                                 <div>
-                                    <x-input-label for="date" value="Fecha de Home Office" />
-                                    <input type="text" name="date" id="date" required readonly
-                                        placeholder="Selecciona una fecha..."
+                                    <x-input-label for="dates" value="Fechas de Home Office" />
+                                    <input type="text" name="dates" id="dates" required readonly
+                                        placeholder="Selecciona una o más fechas..."
                                         class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm cursor-pointer">
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                        📅 Solo días hábiles desde hoy hasta fin de
-                                        {{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }} (fines de semana
-                                        deshabilitados)
+                                        📅 Selecciona múltiples días hábiles desde hoy hasta fin de
+                                        {{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }} (haz clic en cada
+                                        fecha que desees asignar)
                                     </p>
+                                    <div id="selected-dates-preview" class="mt-2 flex flex-wrap gap-2"></div>
                                 </div>
 
                                 <div class="pt-4">
@@ -259,23 +260,73 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const dateInput = document.getElementById('date');
-                if (dateInput) {
-                    flatpickr(dateInput, {
+                const datesInput = document.getElementById('dates');
+                const previewContainer = document.getElementById('selected-dates-preview');
+
+                if (datesInput) {
+                    const fp = flatpickr(datesInput, {
                         locale: 'es',
                         dateFormat: 'Y-m-d',
                         minDate: '{{ now()->toDateString() }}',
                         maxDate: '{{ Carbon\Carbon::create($year, $month, 1)->endOfMonth()->toDateString() }}',
-                        defaultDate: '{{ now()->toDateString() }}',
-                        disableMobile: false,
+                        mode: 'multiple',
+                        conjunction: ', ',
+                        disableMobile: true,
                         theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
                         disable: [
                             function (date) {
                                 // Deshabilitar fines de semana (0 = domingo, 6 = sábado)
                                 return (date.getDay() === 0 || date.getDay() === 6);
                             }
-                        ]
+                        ],
+                        onChange: function (selectedDates, dateStr, instance) {
+                            updatePreview(selectedDates, instance);
+                        }
                     });
+
+                    function updatePreview(selectedDates, fpInstance) {
+                        previewContainer.innerHTML = '';
+
+                        if (selectedDates.length === 0) {
+                            return;
+                        }
+
+                        // Ordenar fechas
+                        selectedDates.sort((a, b) => a - b);
+
+                        selectedDates.forEach(function (date, index) {
+                            const badge = document.createElement('span');
+                            badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200';
+
+                            const dateText = date.toLocaleDateString('es-ES', {
+                                weekday: 'short',
+                                day: 'numeric',
+                                month: 'short'
+                            });
+
+                            badge.innerHTML = `
+                                    ${dateText}
+                                    <button type="button" class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-700" data-index="${index}">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                `;
+
+                            badge.querySelector('button').addEventListener('click', function () {
+                                const newDates = fpInstance.selectedDates.filter((_, i) => i !== index);
+                                fpInstance.setDate(newDates);
+                            });
+
+                            previewContainer.appendChild(badge);
+                        });
+
+                        // Mostrar contador
+                        const counter = document.createElement('span');
+                        counter.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                        counter.textContent = `${selectedDates.length} día(s) seleccionado(s)`;
+                        previewContainer.appendChild(counter);
+                    }
                 }
             });
         </script>
