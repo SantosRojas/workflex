@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeOfficeController;
 use App\Http\Controllers\FlexibleScheduleController;
+use App\Http\Controllers\VacationController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
@@ -38,6 +39,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/flexible-schedule/{flexibleSchedule}', [FlexibleScheduleController::class, 'destroy'])->name('flexible-schedule.destroy');
     Route::get('/flexible-schedule/report', [FlexibleScheduleController::class, 'report'])->name('flexible-schedule.report');
     Route::get('/flexible-schedule/report/export', [FlexibleScheduleController::class, 'exportExcel'])->name('flexible-schedule.export');
+
+    // Rutas de Vacaciones
+    Route::get('/vacation', [VacationController::class, 'index'])->name('vacation.index');
+    Route::post('/vacation', [VacationController::class, 'store'])->name('vacation.store');
+    Route::put('/vacation/{vacation}', [VacationController::class, 'update'])->name('vacation.update');
+    Route::delete('/vacation/{vacation}', [VacationController::class, 'destroy'])->name('vacation.destroy');
+    Route::get('/vacation/report', [VacationController::class, 'report'])->name('vacation.report');
+    Route::get('/vacation/report/export', [VacationController::class, 'exportExcel'])->name('vacation.export');
 
     // Rutas de Administración (solo admin)
     Route::get('/admin/settings', [SystemSettingController::class, 'index'])->name('admin.settings');

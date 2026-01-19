@@ -60,6 +60,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Asignaciones de vacaciones del usuario
+     */
+    public function vacationAssignments()
+    {
+        return $this->hasMany(VacationAssignment::class);
+    }
+
+    /**
      * Usuarios del mismo área de trabajo (para managers)
      */
     public function teamMembers()
