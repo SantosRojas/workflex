@@ -21,7 +21,11 @@
             <div class="text-right">
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm {{ $planningPeriod['isActive'] ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' }}">
-                    {{ $planningPeriod['isActive'] ? '✅ Período de planificación activo' : '⏰ Fuera de período' }}
+                    @if($planningPeriod['isActive'])
+                        <x-icons.check class="w-4 h-4 mr-2" /> Período de planificación activo
+                    @else
+                        <x-icons.time class="w-4 h-4 mr-2" /> Fuera de período
+                    @endif
                 </span>
             </div>
         </div>

@@ -153,8 +153,8 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    class="px-3 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full text-sm font-semibold">
-                                                    🍽
+                                                    class="px-3 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full text-sm font-semibold flex items-center justify-center w-fit">
+                                                    <x-icons.lunch class="w-3 h-3 mr-1" />
                                                     {{ $assignment->lunch_start_time ? substr($assignment->lunch_start_time, 0, 5) : '12:00' }}
                                                 </span>
                                             </td>

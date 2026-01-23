@@ -8,13 +8,13 @@
     <div class="p-6">
         {{-- Header --}}
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                ⏰ Horarios Flexibles -
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                <x-icons.time class="w-5 h-5 mr-2" /> Horarios Flexibles -
                 {{ Carbon\Carbon::create($currentYear, $currentMonth, 1)->locale('es')->monthName }}
             </h3>
             <a href="{{ route('flexible-schedule.index') }}"
-                class="text-sm text-green-600 hover:text-green-800 dark:text-green-400">
-                Gestionar horarios →
+                class="text-sm text-green-600 hover:text-green-800 dark:text-green-400 inline-flex items-center">
+                Gestionar horarios <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
         </div>
 

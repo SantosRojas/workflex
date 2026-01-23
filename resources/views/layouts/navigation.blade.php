@@ -25,15 +25,15 @@
                             {{ __('Horario Flexible') }}
                         </x-nav-link>
                         <x-nav-link :href="route('vacation.index')" :active="request()->routeIs('vacation.*')">
-                            🏖️ {{ __('Vacaciones') }}
+                            <x-icons.vacation class="w-5 h-5 mr-1" /> {{ __('Vacaciones') }}
                         </x-nav-link>
                     @endif
                     @if(Auth::user()->isAdmin())
                         <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.settings')">
-                            ⚙️ {{ __('Configuración') }}
+                            <x-icons.settings class="w-5 h-5 mr-1" /> {{ __('Configuración') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            👥 {{ __('Usuarios') }}
+                            <x-icons.users class="w-5 h-5 mr-1" /> {{ __('Usuarios') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -108,12 +108,16 @@
                     {{ __('Horario Flexible') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('vacation.index')" :active="request()->routeIs('vacation.*')">
-                    🏖️ {{ __('Vacaciones') }}
+                    <div class="flex items-center">
+                        <x-icons.vacation class="w-5 h-5 mr-2" /> {{ __('Vacaciones') }}
+                    </div>
                 </x-responsive-nav-link>
             @endif
             @if(Auth::user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.*')">
-                    ⚙️ {{ __('Configuración') }}
+                    <div class="flex items-center">
+                        <x-icons.settings class="w-5 h-5 mr-2" /> {{ __('Configuración') }}
+                    </div>
                 </x-responsive-nav-link>
             @endif
         </div>

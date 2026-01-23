@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                ⚙️ {{ __('Configuración del Sistema') }}
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex items-center">
+                <x-icons.settings class="w-6 h-6 mr-2" /> {{ __('Configuración del Sistema') }}
             </h2>
             <a href="{{ route('admin.users.index') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-600 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 dark:hover:bg-gray-600">
-                👥 Gestión de Usuarios
+                <x-icons.users class="w-4 h-4 mr-1" /> Gestión de Usuarios
             </a>
         </div>
     </x-slot>
@@ -32,8 +32,8 @@
             {{-- Formulario de configuración --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6">
-                        ⚙️ Parámetros del Sistema
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6 flex items-center">
+                        <x-icons.settings class="w-5 h-5 mr-2" /> Parámetros del Sistema
                     </h3>
                     
                     <form action="{{ route('admin.settings.update') }}" method="POST">
@@ -43,8 +43,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {{-- Días de Home Office por mes --}}
                             <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
-                                <label for="max_home_office_days" class="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-                                    🏠 Días Home Office por Mes
+                                <label for="max_home_office_days" class="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2 flex items-center">
+                                    <x-icons.home-office class="w-5 h-5 mr-2" /> Días Home Office por Mes
                                 </label>
                                 <input type="number" 
                                        name="max_home_office_days" 
@@ -60,8 +60,8 @@
 
                             {{-- Personas máximas por día --}}
                             <div class="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
-                                <label for="max_people_per_day" class="block text-sm font-medium text-purple-800 dark:text-purple-200 mb-2">
-                                    👥 Personas Máximas por Día
+                                <label for="max_people_per_day" class="block text-sm font-medium text-purple-800 dark:text-purple-200 mb-2 flex items-center">
+                                    <x-icons.users class="w-5 h-5 mr-2" /> Personas Máximas por Día
                                 </label>
                                 <input type="number" 
                                        name="max_people_per_day" 
@@ -77,8 +77,8 @@
 
                             {{-- Minutos de trabajo por día --}}
                             <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-                                <label for="daily_work_minutes" class="block text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-                                    ⏱️ Minutos de Trabajo por Día
+                                <label for="daily_work_minutes" class="block text-sm font-medium text-green-800 dark:text-green-200 mb-2 flex items-center">
+                                    <x-icons.time class="w-5 h-5 mr-2" /> Minutos de Trabajo por Día
                                 </label>
                                 <input type="number" 
                                        name="daily_work_minutes" 
@@ -98,8 +98,8 @@
 
                         {{-- Período de Planificación de Enero --}}
                         <div class="mt-6 p-4 bg-orange-50 dark:bg-orange-900 rounded-lg">
-                            <h4 class="text-md font-semibold text-orange-800 dark:text-orange-200 mb-4">
-                                📅 Período de Planificación para Enero
+                            <h4 class="text-md font-semibold text-orange-800 dark:text-orange-200 mb-4 flex items-center">
+                                <x-icons.calendar class="w-5 h-5 mr-2" /> Período de Planificación para Enero
                             </h4>
                             <p class="text-sm text-orange-600 dark:text-orange-300 mb-4">
                                 Configura los días del mes de enero en los que los empleados pueden planificar sus asignaciones.
@@ -107,8 +107,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {{-- Día de inicio --}}
                                 <div>
-                                    <label for="january_planning_start_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2">
-                                        🟢 Día de Inicio
+                                    <label for="january_planning_start_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2 flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div> Día de Inicio
                                     </label>
                                     <input type="number" 
                                            name="january_planning_start_day" 
@@ -124,8 +124,8 @@
 
                                 {{-- Día de fin --}}
                                 <div>
-                                    <label for="january_planning_end_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2">
-                                        🔴 Día de Fin
+                                    <label for="january_planning_end_day" class="block text-sm font-medium text-orange-800 dark:text-orange-200 mb-2 flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div> Día de Fin
                                     </label>
                                     <input type="number" 
                                            name="january_planning_end_day" 
@@ -139,8 +139,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <p class="mt-4 text-sm text-orange-700 dark:text-orange-400 font-semibold">
-                                📌 Período actual: Del {{ str_pad($settings['january_planning_start_day'], 2, '0', STR_PAD_LEFT) }}/01 al {{ str_pad($settings['january_planning_end_day'], 2, '0', STR_PAD_LEFT) }}/01
+                            <p class="mt-4 text-sm text-orange-700 dark:text-orange-400 font-semibold flex items-center">
+                                <x-icons.info class="w-4 h-4 mr-1" /> Período actual: Del {{ str_pad($settings['january_planning_start_day'], 2, '0', STR_PAD_LEFT) }}/01 al {{ str_pad($settings['january_planning_end_day'], 2, '0', STR_PAD_LEFT) }}/01
                             </p>
                         </div>
 
@@ -156,8 +156,8 @@
             {{-- Información actual --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                        📊 Resumen de Configuración Actual
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                        <x-icons.chart class="w-5 h-5 mr-2" /> Resumen de Configuración Actual
                     </h3>
                     
                     <div class="overflow-x-auto">
@@ -181,22 +181,22 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach($allSettings as $setting)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center">
                                             @switch($setting->key)
                                                 @case('max_home_office_days')
-                                                    🏠 Días Home Office por Mes
+                                                    <x-icons.home-office class="w-4 h-4 mr-2" /> Días Home Office por Mes
                                                     @break
                                                 @case('max_people_per_day')
-                                                    👥 Personas Máximas por Día
+                                                    <x-icons.users class="w-4 h-4 mr-2" /> Personas Máximas por Día
                                                     @break
                                                 @case('daily_work_minutes')
-                                                    ⏱️ Minutos de Trabajo por Día
+                                                    <x-icons.time class="w-4 h-4 mr-2" /> Minutos de Trabajo por Día
                                                     @break
                                                 @case('january_planning_start_day')
-                                                    📅 Inicio Planificación Enero
+                                                    <x-icons.calendar class="w-4 h-4 mr-2" /> Inicio Planificación Enero
                                                     @break
                                                 @case('january_planning_end_day')
-                                                    📅 Fin Planificación Enero
+                                                    <x-icons.calendar class="w-4 h-4 mr-2" /> Fin Planificación Enero
                                                     @break
                                                 @default
                                                     {{ $setting->key }}
@@ -228,8 +228,8 @@
 
             {{-- Ayuda --}}
             <div class="bg-yellow-50 dark:bg-yellow-900 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
-                    💡 Ayuda
+                <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2 flex items-center">
+                    <x-icons.info class="w-5 h-5 mr-2" /> Ayuda
                 </h3>
                 <ul class="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
                     <li><strong>Días Home Office por Mes:</strong> Cada empleado puede solicitar hasta este número de días de trabajo remoto mensualmente.</li>

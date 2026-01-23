@@ -8,11 +8,7 @@
             <div class="flex gap-2">
                 <a href="{{ route('home-office.export', ['month' => $month, 'year' => $year]) }}"
                     class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
+                    <x-icons.download class="w-4 h-4 mr-2" />
                     Descargar Excel
                 </a>
                 <a href="{{ route('home-office.index', ['month' => $month, 'year' => $year]) }}"
@@ -47,19 +43,28 @@
 
             {{-- Estadísticas generales --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                    <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-800 mb-2">
+                        <x-icons.check class="w-6 h-6 text-blue-600 dark:text-blue-300" />
+                    </div>
                     <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">
                         {{ $assignments->count() }}
                     </div>
                     <div class="text-gray-600 dark:text-gray-400">Total asignaciones</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                    <div class="p-3 rounded-full bg-green-100 dark:bg-green-800 mb-2">
+                        <x-icons.users class="w-6 h-6 text-green-600 dark:text-green-300" />
+                    </div>
                     <div class="text-3xl font-bold text-green-600 dark:text-green-400">
                         {{ $byUser->count() }}
                     </div>
                     <div class="text-gray-600 dark:text-gray-400">Empleados con home office</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                    <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-800 mb-2">
+                        <x-icons.calendar class="w-6 h-6 text-purple-600 dark:text-purple-300" />
+                    </div>
                     <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
                         {{ $byDate->count() }}
                     </div>
@@ -70,7 +75,9 @@
             {{-- Resumen por usuario --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Resumen por Empleado</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                        <x-icons.list class="w-5 h-5 mr-2" /> Resumen por Empleado
+                    </h3>
 
                     @if($byUser->isEmpty())
                         <p class="text-gray-500 dark:text-gray-400">No hay asignaciones para este mes.</p>
@@ -133,7 +140,9 @@
             {{-- Resumen por fecha --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Distribución por Fecha</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                        <x-icons.calendar class="w-5 h-5 mr-2" /> Distribución por Fecha
+                    </h3>
 
                     @if($byDate->isEmpty())
                         <p class="text-gray-500 dark:text-gray-400">No hay asignaciones para este mes.</p>

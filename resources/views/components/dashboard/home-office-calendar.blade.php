@@ -21,12 +21,12 @@
                     <a href="{{ route('dashboard', ['month' => $previousMonth->month, 'year' => $previousMonth->year]) }}"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         title="Mes anterior">
-                        ←
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </a>
                 @endif
 
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 min-w-max">
-                    📅 Calendario -
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 min-w-max flex items-center">
+                    <x-icons.calendar class="w-5 h-5 mr-2" /> Calendario -
                     {{ Carbon\Carbon::create($currentYear, $currentMonth, 1)->locale('es')->monthName }}
                     {{ $currentYear }}
                 </h3>
@@ -36,15 +36,15 @@
                     <a href="{{ route('dashboard', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         title="Mes siguiente">
-                        →
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </a>
                 @endif
             </div>
 
             @if($user->canManageAssignments())
                 <a href="{{ route('home-office.index') }}"
-                    class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">
-                    Gestionar asignaciones →
+                    class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 inline-flex items-center">
+                    Gestionar asignaciones <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </a>
             @endif
         </div>

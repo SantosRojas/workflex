@@ -43,11 +43,13 @@
                         <div class="p-6">
                             {{-- Información del período activo --}}
                             <div class="mb-6 p-4 rounded-lg bg-green-100 dark:bg-green-900">
-                                <p class="text-sm text-green-800 dark:text-green-200">
-                                    <span class="font-semibold">✅ Período de planificación activo</span>
-                                    <br>
-                                    <span class="text-xs">Del {{ $planningPeriod['start']->format('d/m/Y') }} al
-                                        {{ $planningPeriod['end']->format('d/m/Y') }}</span>
+                                <p class="text-sm text-green-800 dark:text-green-200 flex items-center">
+                                    <x-icons.check class="w-5 h-5 mr-2" />
+                                    <span class="font-semibold mr-1">Período de planificación activo</span>
+                                </p>
+                                <p class="text-xs text-green-800 dark:text-green-200 mt-1 ml-7">
+                                    Del {{ $planningPeriod['start']->format('d/m/Y') }} al
+                                    {{ $planningPeriod['end']->format('d/m/Y') }}
                                 </p>
                             </div>
 
@@ -61,13 +63,15 @@
                             {{-- Información de límites --}}
                             <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="bg-blue-50 dark:bg-blue-900 p-3 rounded-lg">
-                                    <p class="text-sm text-blue-800 dark:text-blue-200">
-                                        <span class="font-semibold">📊 Máximo:</span> {{ $maxDaysPerMonth }} días/mes
+                                    <p class="text-sm text-blue-800 dark:text-blue-200 flex items-center">
+                                        <x-icons.chart class="w-4 h-4 mr-2" />
+                                        <span class="font-semibold mr-1">Máximo:</span> {{ $maxDaysPerMonth }} días/mes
                                     </p>
                                 </div>
                                 <div class="bg-purple-50 dark:bg-purple-900 p-3 rounded-lg">
-                                    <p class="text-sm text-purple-800 dark:text-purple-200">
-                                        <span class="font-semibold">👥 Por día:</span> {{ $maxPeoplePerDay }} personas
+                                    <p class="text-sm text-purple-800 dark:text-purple-200 flex items-center">
+                                        <x-icons.users class="w-4 h-4 mr-2" />
+                                        <span class="font-semibold mr-1">Por día:</span> {{ $maxPeoplePerDay }} personas
                                     </p>
                                 </div>
                             </div>
@@ -99,8 +103,9 @@
                                         placeholder="Primero selecciona un empleado..."
                                         class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm cursor-pointer disabled:opacity-50"
                                         disabled>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                        📅 Selecciona días hábiles desde hoy hasta fin de
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                                        <x-icons.calendar class="w-3 h-3 mr-1" />
+                                        Selecciona días hábiles desde hoy hasta fin de
                                         {{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }}
                                     </p>
                                     <p id="days-available-info"
@@ -111,10 +116,7 @@
 
                                 <div class="pt-4">
                                     <x-primary-button class="w-full justify-center">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
+                                        <x-icons.check class="w-5 h-5 mr-2" />
                                         Asignar Home Office
                                     </x-primary-button>
                                 </div>
@@ -146,11 +148,7 @@
                                                     <button type="submit"
                                                         class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                                                         onclick="return confirm('¿Eliminar esta asignación?')">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                            </path>
-                                                        </svg>
+                                                        <x-icons.delete class="w-5 h-5" />
                                                     </button>
                                                 </form>
                                             @endif
@@ -164,11 +162,7 @@
                     {{-- Usuario sin permisos --}}
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                                </path>
-                            </svg>
+                            <x-icons.warning class="mx-auto h-12 w-12 text-gray-400" />
                             <h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">Acceso restringido</h3>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 No tienes permisos para asignar días de home office.
@@ -183,11 +177,7 @@
                     <div class="p-8 text-center">
                         <div
                             class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 dark:bg-yellow-900 mb-4">
-                            <svg class="h-8 w-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <x-icons.time class="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
                         </div>
 
                         @php
@@ -202,8 +192,8 @@
 
                         @if($status === 'just_ended')
                             {{-- Período recién terminado (menos de 3 días) --}}
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                ⛔ El período de asignación finalizó
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-center gap-2">
+                                <x-icons.warning class="w-6 h-6 text-red-500" /> El período de asignación finalizó
                             </h3>
 
                             <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -215,7 +205,7 @@
 
                             <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg inline-block">
                                 <p class="text-red-800 dark:text-red-200">
-                                    <span class="font-semibold">📅 El período fue:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> El período fue:</span>
                                     <br>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
                                         {{ $planningPeriod['end']->format('d/m/Y') }}</span>
@@ -240,7 +230,7 @@
 
                             <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
                                 <p class="text-blue-800 dark:text-blue-200">
-                                    <span class="font-semibold">📅 Período de planificación:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Período de planificación:</span>
                                     <br>
                                     <span class="text-lg">{{ $nextPeriod['start']->format('d/m/Y') }} -
                                         {{ $nextPeriod['end']->format('d/m/Y') }}</span>
@@ -265,7 +255,7 @@
 
                             <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
                                 <p class="text-blue-800 dark:text-blue-200">
-                                    <span class="font-semibold">📅 Período de planificación:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Período de planificación:</span>
                                     <br>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
                                         {{ $planningPeriod['end']->format('d/m/Y') }}</span>

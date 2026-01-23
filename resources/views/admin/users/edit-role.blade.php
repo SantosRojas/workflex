@@ -1,8 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                👤 Cambiar Rol - {{ $user->name }} {{ $user->last_name }}
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex items-center gap-2">
+                <x-icons.users class="w-6 h-6" />
+                Cambiar Rol - {{ $user->name }} {{ $user->last_name }}
             </h2>
             <a href="{{ route('admin.users.index') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-600 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 dark:hover:bg-gray-600">
@@ -28,16 +29,16 @@
                         </div>
                         <div>
                             <p class="text-gray-600 dark:text-gray-400">Rol Actual</p>
-                            <p class="text-gray-900 dark:text-gray-100 font-semibold">
+                            <p class="text-gray-900 dark:text-gray-100 font-semibold flex items-center">
                                 @switch($user->role)
                                     @case('admin')
-                                        🔐 Administrador
+                                        <x-icons.key class="w-4 h-4 mr-1" /> Administrador
                                         @break
                                     @case('manager')
-                                        👔 Manager
+                                        <x-icons.users class="w-4 h-4 mr-1" /> Manager
                                         @break
                                     @case('user')
-                                        👤 Usuario
+                                        <x-icons.user class="w-4 h-4 mr-1" /> Usuario
                                         @break
                                 @endswitch
                             </p>
@@ -77,16 +78,16 @@
                                            {{ $user->role === $role ? 'checked' : '' }}
                                            class="mt-0.5">
                                     <div class="ml-4">
-                                        <p class="font-semibold text-gray-900 dark:text-gray-100">
+                                        <p class="font-semibold text-gray-900 dark:text-gray-100 flex items-center">
                                             @switch($role)
                                                 @case('admin')
-                                                    🔐 Administrador
+                                                    <x-icons.key class="w-4 h-4 mr-1" /> Administrador
                                                     @break
                                                 @case('manager')
-                                                    👔 Manager
+                                                    <x-icons.users class="w-4 h-4 mr-1" /> Manager
                                                     @break
                                                 @case('user')
-                                                    👤 Usuario
+                                                    <x-icons.user class="w-4 h-4 mr-1" /> Usuario
                                                     @break
                                             @endswitch
                                         </p>
@@ -109,8 +110,9 @@
                         </div>
 
                         <div class="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
-                            <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                                <span class="font-semibold">⚠️ Importante:</span> Cambiar el rol puede afectar los permisos y acceso del usuario. Asegúrate de que es la acción correcta.
+                            <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-start gap-2">
+                                <x-icons.warning class="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                <span><span class="font-semibold">Importante:</span> Cambiar el rol puede afectar los permisos y acceso del usuario. Asegúrate de que es la acción correcta.</span>
                             </p>
                         </div>
 
@@ -120,7 +122,7 @@
                                 Cancelar
                             </a>
                             <x-primary-button>
-                                💾 Guardar Cambio de Rol
+                                <x-icons.check class="w-4 h-4 mr-2" /> Guardar Cambio de Rol
                             </x-primary-button>
                         </div>
                     </form>

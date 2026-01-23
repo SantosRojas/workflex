@@ -46,8 +46,8 @@
             {{-- Mensajes de éxito/error --}}
             @if(session('success'))
                 <div
-                    class="mb-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded">
-                    {{ session('success') }}
+                    class="mb-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded flex items-center">
+                    <x-icons.check class="w-5 h-5 mr-2" /> {{ session('success') }}
                 </div>
             @endif
 
@@ -55,7 +55,7 @@
                 <div
                     class="mb-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded">
                     @foreach($errors->all() as $error)
-                        <p>{{ $error }}</p>
+                        <p class="flex items-center"><x-icons.warning class="w-5 h-5 mr-2" /> {{ $error }}</p>
                     @endforeach
                 </div>
             @endif
@@ -73,8 +73,8 @@
 
             {{-- Información sobre la política de vacaciones --}}
             <div class="mb-6 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-                <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                    📋 Política de Vacaciones
+                <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center">
+                    <x-icons.list class="w-5 h-5 mr-2" /> Política de Vacaciones
                 </h3>
                 <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                     <li>• Cada colaborador tiene derecho a <strong>30 días</strong> de vacaciones por año (equivalente a un mes calendario).</li>
@@ -89,8 +89,8 @@
             @if(Auth::user()->canManageAssignments())
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                            🏖️ Asignar Vacaciones
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <x-icons.vacation class="w-6 h-6 mr-2" /> Asignar Vacaciones
                         </h3>
 
                         <form action="{{ route('vacation.store') }}" method="POST" class="space-y-4">
@@ -122,15 +122,17 @@
                             </div>
 
                             <div id="days-info" class="hidden p-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg space-y-2">
-                                <p class="text-sm text-indigo-800 dark:text-indigo-200">
-                                    <span class="font-semibold">📊 Días disponibles:</span>
+                                <p class="text-sm text-indigo-800 dark:text-indigo-200 flex items-center">
+                                    <x-icons.chart class="w-4 h-4 mr-2" />
+                                    <span class="font-semibold mr-1">Días disponibles:</span>
                                     <span id="available-days-count">0</span> de 30 días
                                 </p>
                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                                     <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
                                 </div>
-                                <p class="text-xs text-indigo-600 dark:text-indigo-300">
-                                    🗓️ Fines de semana: <span id="weekend-used">0</span>/8 usados 
+                                <p class="text-xs text-indigo-600 dark:text-indigo-300 flex items-center">
+                                    <x-icons.calendar class="w-3 h-3 mr-1" />
+                                    Fines de semana: <span id="weekend-used">0</span>/8 usados 
                                     (<span id="weekend-remaining">8</span> restantes)
                                 </p>
                             </div>
@@ -139,15 +141,17 @@
                                 <x-input-label for="date_range" value="Período de Vacaciones" />
                                 <input type="text" id="date_range" readonly placeholder="Primero selecciona un empleado..."
                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    📅 Haz clic para seleccionar el día inicial y el día final en el calendario
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                                    <x-icons.calendar class="w-3 h-3 mr-1" />
+                                    Haz clic para seleccionar el día inicial y el día final en el calendario
                                 </p>
                             </div>
 
                             <div id="period-preview" class="hidden p-3 bg-green-50 dark:bg-green-900 rounded-lg">
                                 <div class="flex items-center justify-between">
-                                    <p class="text-sm text-green-800 dark:text-green-200">
-                                        <span class="font-semibold">📅 Período seleccionado:</span>
+                                    <p class="text-sm text-green-800 dark:text-green-200 flex items-center">
+                                        <x-icons.calendar class="w-4 h-4 mr-1" />
+                                        <span class="font-semibold mr-1">Período seleccionado:</span>
                                         <span id="period-text"></span>
                                     </p>
                                     <span id="period-days-badge" class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200">
@@ -157,8 +161,8 @@
                             </div>
 
                             <div id="days-warning" class="hidden p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg">
-                                <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                                    ⚠️ <span id="warning-text"></span>
+                                <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-center">
+                                    <x-icons.warning class="w-5 h-5 mr-2" /> <span id="warning-text"></span>
                                 </p>
                             </div>
 
@@ -170,10 +174,7 @@
 
                             <div class="pt-4">
                                 <x-primary-button class="w-full justify-center" id="submitBtn" disabled>
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
+                                    <x-icons.check class="w-5 h-5 mr-2" />
                                     Asignar Vacaciones
                                 </x-primary-button>
                             </div>
@@ -185,8 +186,8 @@
             {{-- Lista de asignaciones actuales --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                        📋 Vacaciones Asignadas - {{ $year }}
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                        <x-icons.list class="w-5 h-5 mr-2" /> Vacaciones Asignadas - {{ $year }}
                     </h3>
 
                     @php
@@ -238,8 +239,8 @@
                                                         <span class="px-2 py-0.5 text-xs rounded-full {{ $assignment->status_class }}">
                                                             {{ $assignment->status_label }}
                                                         </span>
-                                                        <span class="text-sm text-gray-700 dark:text-gray-300">
-                                                            📅 {{ $assignment->formatted_period }}
+                                                        <span class="text-sm text-gray-700 dark:text-gray-300 flex items-center">
+                                                            <x-icons.calendar class="w-4 h-4 mr-1" /> {{ $assignment->formatted_period }}
                                                         </span>
                                                     </div>
                                                     <p class="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
@@ -249,8 +250,8 @@
                                                         </span>
                                                     </p>
                                                     @if($assignment->notes)
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            📝 {{ $assignment->notes }}
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+                                                            <x-icons.edit class="w-3 h-3 mr-1" /> {{ $assignment->notes }}
                                                         </p>
                                                     @endif
                                                 </div>
@@ -260,11 +261,7 @@
                                                         <button type="button"
                                                             onclick="openEditModal({{ $assignment->id }}, '{{ $assignment->start_date->format('Y-m-d') }}', '{{ $assignment->end_date->format('Y-m-d') }}', '{{ addslashes($assignment->notes ?? '') }}')"
                                                             class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                                </path>
-                                                            </svg>
+                                                            <x-icons.edit class="w-4 h-4" />
                                                         </button>
                                                         <form action="{{ route('vacation.destroy', $assignment) }}" method="POST" class="inline">
                                                             @csrf
@@ -272,11 +269,7 @@
                                                             <button type="submit"
                                                                 class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
                                                                 onclick="return confirm('¿Eliminar estas vacaciones?')">
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                                    </path>
-                                                                </svg>
+                                                                <x-icons.delete class="w-4 h-4" />
                                                             </button>
                                                         </form>
                                                     </div>
@@ -289,12 +282,7 @@
                         </div>
                     @else
                         <div class="text-center py-8">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
+                            <x-icons.vacation class="mx-auto h-12 w-12 text-gray-400" />
                             <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No hay vacaciones
                                 asignadas</h3>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -308,8 +296,8 @@
             {{-- Resumen por empleado --}}
             <div class="mt-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                        📊 Resumen por Empleado
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                        <x-icons.chart class="w-5 h-5 mr-2" /> Resumen por Empleado
                     </h3>
 
                     <div class="space-y-3">
@@ -334,7 +322,7 @@
                                 </div>
                                 <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     <span>{{ $summary['used_days'] }} de 30 días usados ({{ $summary['percentage_used'] }}%)</span>
-                                    <span>🗓️ Fines de semana: {{ $summary['weekend_days_used'] }}/8</span>
+                                    <span class="flex items-center"><x-icons.calendar class="w-3 h-3 mr-1" /> Fines de semana: {{ $summary['weekend_days_used'] }}/8</span>
                                 </div>
                             </div>
                         @endforeach
@@ -349,8 +337,8 @@
     <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                    ✏️ Editar Vacaciones
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                    <x-icons.edit class="w-5 h-5 mr-2" /> Editar Vacaciones
                 </h3>
                 <form id="editForm" method="POST">
                     @csrf
