@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/users/{user}/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.users.update-password');
     Route::get('/admin/users/{user}/edit-role', [UserManagementController::class, 'editRole'])->name('admin.users.edit-role');
     Route::put('/admin/users/{user}/update-role', [UserManagementController::class, 'updateRole'])->name('admin.users.update-role');
+    Route::get('/admin/users/{user}/edit-area', [UserManagementController::class, 'editArea'])->name('admin.users.edit-area');
+    Route::put('/admin/users/{user}/update-area', [UserManagementController::class, 'updateArea'])->name('admin.users.update-area');
     Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 });
 

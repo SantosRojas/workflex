@@ -136,6 +136,46 @@ class UserManagementController extends Controller
     }
 
     /**
+     * Mostrar formulario para editar área de un usuario
+     */
+    public function editArea(User $user)
+    {
+        $admin = Auth::user();
+
+        if (!$admin->isAdmin()) {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
+
+        return view('admin.users.edit-area', compact('user'));
+    }
+
+    /**
+     * Actualizar área de un usuario
+     */
+    public function updateArea(Request $request, User $user)
+    {
+        $admin = Auth::user();
+
+        if (!$admin->isAdmin()) {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
+
+        $validated = $request->validate([
+            'work_area' => 'required|string|max:255',
+        ], [
+            'work_area.required' => 'El área de trabajo es requerida.',
+            'work_area.max' => 'El área de trabajo no puede tener más de 255 caracteres.',
+        ]);
+
+        $user->work_area = $validated['work_area'];
+        $user->save();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', "Área actualizada para {$user->name} {$user->last_name}.");
+    }
+
+    /**
      * Eliminar (desactivar) un usuario
      */
     public function destroy(User $user)
