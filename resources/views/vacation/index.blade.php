@@ -99,26 +99,32 @@
                             <input type="hidden" name="start_date" id="start_date">
                             <input type="hidden" name="end_date" id="end_date">
 
+                            @php
+                                $usersForAutocomplete = $teamMembers->map(function($member) use ($userSummaries) {
+                                    $summary = $userSummaries[$member->id];
+                                    return [
+                                        'id' => $member->id,
+                                        'name' => $member->name,
+                                        'last_name' => $member->last_name,
+                                        'work_area' => Auth::user()->isAdmin() ? $member->work_area : null,
+                                        'available_days' => $summary['available_days'],
+                                        'used_days' => $summary['used_days'],
+                                        'weekend_days_used' => $summary['weekend_days_used'],
+                                        'remaining_weekend_quota' => $summary['remaining_weekend_quota']
+                                    ];
+                                })->values()->toArray();
+                            @endphp
+
                             <div>
-                                <x-input-label for="user_id" value="Empleado" />
-                                <select name="user_id" id="user_id" required
-                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                    <option value="">Seleccionar empleado...</option>
-                                    @foreach($teamMembers as $member)
-                                        @php $summary = $userSummaries[$member->id]; @endphp
-                                        <option value="{{ $member->id }}" 
-                                            data-available="{{ $summary['available_days'] }}"
-                                            data-used="{{ $summary['used_days'] }}"
-                                            data-weekend-used="{{ $summary['weekend_days_used'] }}"
-                                            data-weekend-remaining="{{ $summary['remaining_weekend_quota'] }}">
-                                            {{ $member->name }} {{ $member->last_name }}
-                                            @if(Auth::user()->isAdmin())
-                                                [{{ $member->work_area }}]
-                                            @endif
-                                            ({{ $summary['available_days'] }} días disponibles)
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <x-forms.autocomplete 
+                                    label="Empleado"
+                                    name="user_id"
+                                    :items="$usersForAutocomplete"
+                                    itemText="name"
+                                    itemValue="id"
+                                    placeholder="Buscar empleado..."
+                                    required="true"
+                                />
                             </div>
 
                             <div id="days-info" class="hidden p-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg space-y-2">
@@ -379,7 +385,7 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const userSelect = document.getElementById('user_id');
+                // const userSelect = document.getElementById('user_id'); // Ya no existe el select
                 const dateRangeInput = document.getElementById('date_range');
                 const startDateInput = document.getElementById('start_date');
                 const endDateInput = document.getElementById('end_date');
@@ -499,9 +505,9 @@
                     return `${year}-${month}-${day}`;
                 }
 
-                // Escuchar cambios en el select de empleado
-                userSelect.addEventListener('change', function() {
-                    const selected = this.options[this.selectedIndex];
+                // Escuchar evento de selección del autocomplete
+                document.addEventListener('item-selected', function(e) {
+                    const selected = e.detail;
                     
                     // Limpiar selección anterior
                     fp.clear();
@@ -511,14 +517,14 @@
                     daysWarning.classList.add('hidden');
                     submitBtn.disabled = true;
                     
-                    if (this.value) {
-                        availableDays = parseInt(selected.dataset.available);
-                        const used = parseInt(selected.dataset.used);
+                    if (selected) {
+                        availableDays = parseInt(selected.available_days);
+                        const used = parseInt(selected.used_days);
                         const percentage = (used / 30) * 100;
-                        const weekendUsed = parseInt(selected.dataset.weekendUsed) || 0;
-                        // No usar || 8 porque si weekendRemaining es 0, se convertiría en 8
-                        weekendRemaining = selected.dataset.weekendRemaining !== undefined 
-                            ? parseInt(selected.dataset.weekendRemaining) 
+                        const weekendUsed = parseInt(selected.weekend_days_used) || 0;
+                        
+                        weekendRemaining = selected.remaining_weekend_quota !== undefined 
+                            ? parseInt(selected.remaining_weekend_quota) 
                             : 8;
                         
                         availableSpan.textContent = availableDays;

@@ -79,23 +79,30 @@
                             <form action="{{ route('home-office.store') }}" method="POST" class="space-y-4">
                                 @csrf
 
-                                <div>
-                                    <x-input-label for="user_id" value="Empleado" />
-                                    <select name="user_id" id="user_id" required
-                                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                        <option value="" data-days-used="0">Seleccionar empleado...</option>
-                                        @foreach($teamMembers as $member)
-                                            @php $daysUsed = $member->homeOfficeDaysInMonth($month, $year); @endphp
-                                            <option value="{{ $member->id }}" data-days-used="{{ $daysUsed }}">
-                                                {{ strtok($member->name, ' ') . ' ' . strtok($member->last_name, ' ') }}
-                                                @if(Auth::user()->isAdmin())
-                                                    [{{ $member->work_area }}]
-                                                @endif
-                                                ({{ $daysUsed }}/{{ $maxDaysPerMonth }} días usados)
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    @php
+                                        $usersForAutocomplete = $teamMembers->map(function($member) use ($month, $year) {
+                                            $daysUsed = $member->homeOfficeDaysInMonth($month, $year);
+                                            return [
+                                                'id' => $member->id,
+                                                'name' => $member->name,
+                                                'last_name' => $member->last_name,
+                                                'work_area' => Auth::user()->isAdmin() ? $member->work_area : null,
+                                                'days_used' => $daysUsed
+                                            ];
+                                        })->values()->toArray();
+                                    @endphp
+
+                                    <div>
+                                        <x-forms.autocomplete 
+                                            label="Empleado"
+                                            name="user_id"
+                                            :items="$usersForAutocomplete"
+                                            itemText="name"
+                                            itemValue="id"
+                                            placeholder="Buscar empleado..."
+                                            required="true"
+                                        />
+                                    </div>
 
                                 <div>
                                     <x-input-label for="dates" value="Fechas de Home Office" />
@@ -286,14 +293,14 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const datesInput = document.getElementById('dates');
                 const previewContainer = document.getElementById('selected-dates-preview');
-                const userSelect = document.getElementById('user_id');
+                // const userSelect = document.getElementById('user_id'); // Reemplazado por autocomplete
                 const daysAvailableInfo = document.getElementById('days-available-info');
                 const maxDaysPerMonth = {{ $maxDaysPerMonth }};
 
                 let fp = null;
                 let maxSelectableDates = 0;
 
-                if (datesInput && userSelect) {
+                if (datesInput) {
                     // Inicializar flatpickr
                     fp = flatpickr(datesInput, {
                         locale: 'es',
@@ -325,17 +332,18 @@
                         }
                     });
 
-                    // Escuchar cambios en el select de empleado
-                    userSelect.addEventListener('change', function () {
-                        const selectedOption = this.options[this.selectedIndex];
-                        const daysUsed = parseInt(selectedOption.dataset.daysUsed) || 0;
-                        maxSelectableDates = maxDaysPerMonth - daysUsed;
-
-                        // Limpiar fechas seleccionadas
+                    // Escuchar selección del autocomplete
+                    document.addEventListener('item-selected', function (e) {
+                         const selected = e.detail;
+                         
+                         // Limpiar fechas seleccionadas
                         fp.clear();
                         previewContainer.innerHTML = '';
+                        
+                        if (selected) {
+                            const daysUsed = parseInt(selected.days_used) || 0;
+                            maxSelectableDates = maxDaysPerMonth - daysUsed;
 
-                        if (this.value) {
                             // Habilitar el selector de fechas
                             datesInput.disabled = false;
                             datesInput.placeholder = 'Selecciona una o más fechas...';
@@ -360,6 +368,7 @@
                             datesInput.placeholder = 'Primero selecciona un empleado...';
                             fp.set('clickOpens', false);
                             daysAvailableInfo.classList.add('hidden');
+                            maxSelectableDates = 0;
                         }
                     });
 

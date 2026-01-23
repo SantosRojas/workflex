@@ -92,27 +92,35 @@
                                 <input type="hidden" name="month" value="{{ $month }}">
                                 <input type="hidden" name="year" value="{{ $year }}">
 
-                                <div>
-                                    <x-input-label for="user_id" value="Empleado" />
-                                    <select name="user_id" id="user_id" required
-                                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                        <option value="">Seleccionar empleado...</option>
-                                        @foreach($teamMembers as $member)
-                                            @php
-                                                $hasAssignment = $assignments->where('user_id', $member->id)->first();
-                                            @endphp
-                                            <option value="{{ $member->id }}" {{ $hasAssignment ? 'disabled' : '' }}>
-                                                {{ strtok($member->name, ' ') . ' ' . strtok($member->last_name, ' ') }}
-                                                @if(Auth::user()->isAdmin())
-                                                    [{{ $member->work_area }}]
-                                                @endif
-                                                @if($hasAssignment)
-                                                    (Ya asignado: {{ substr($hasAssignment->start_time, 0, 5) }})
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    @php
+                                        $usersForAutocomplete = $teamMembers->map(function($member) use ($assignments) {
+                                            $hasAssignment = $assignments->where('user_id', $member->id)->first();
+                                            $name = $member->name;
+                                            if ($hasAssignment) {
+                                                $name .= ' (Asignado: ' . substr($hasAssignment->start_time, 0, 5) . ')';
+                                            }
+        
+                                            return [
+                                                'id' => $member->id,
+                                                'name' => $name,
+                                                'last_name' => $member->last_name,
+                                                'work_area' => Auth::user()->isAdmin() ? $member->work_area : null,
+                                                'disabled' => $hasAssignment ? true : false
+                                            ];
+                                        })->values()->toArray();
+                                    @endphp
+
+                                    <div>
+                                        <x-forms.autocomplete 
+                                            label="Empleado"
+                                            name="user_id"
+                                            :items="$usersForAutocomplete"
+                                            itemText="name"
+                                            itemValue="id"
+                                            placeholder="Buscar empleado..."
+                                            required="true"
+                                        />
+                                    </div>
 
                                 <div>
                                     <x-input-label for="start_time" value="Horario de Entrada" />
