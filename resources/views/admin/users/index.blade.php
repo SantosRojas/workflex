@@ -44,7 +44,7 @@
                                        id="search" 
                                        value="{{ $search }}"
                                        placeholder="Nombre, apellido o email..."
-                                       class="block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500">
+                                       class="block w-full h-10 rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
 
                             {{-- Filtro por rol --}}
@@ -53,7 +53,7 @@
                                     Filtrar por rol
                                 </label>
                                 <select name="role" id="role"
-                                        class="block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500">
+                                        class="block w-full h-10 rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Todos los roles</option>
                                     @foreach($roles as $role)
                                         <option value="{{ $role }}" {{ $roleFilter === $role ? 'selected' : '' }}>
@@ -75,8 +75,9 @@
 
                             {{-- Botón buscar --}}
                             <div class="flex items-end">
-                                <x-primary-button class="w-full justify-center">
-                                    🔍 Buscar
+                                <x-primary-button class="w-full justify-center h-10">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    Buscar
                                 </x-primary-button>
                             </div>
                         </div>

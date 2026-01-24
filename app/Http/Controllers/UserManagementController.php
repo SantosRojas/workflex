@@ -37,7 +37,8 @@ class UserManagementController extends Controller
             })
             ->orderBy('name')
             ->orderBy('last_name')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         $roles = ['admin', 'manager', 'user'];
 
