@@ -72,6 +72,14 @@
             this.open = true;
             this.search = ''; // Optional: clear search on open? No, keep it.
         }
+    },
+    
+    clear() {
+        this.selectedItem = null;
+        this.selectedId = null;
+        this.search = '';
+        this.$dispatch('item-selected', null);
+        this.open = false; // Optional: close on clear
     }
 }" class="relative w-full" @click.outside="open = false">
 
@@ -90,10 +98,21 @@
                 class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm pr-10"
                 autocomplete="off"
             />
-            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
+            
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <!-- Default Icon (Selector) -->
+                <button type="button" x-show="!search" @click="toggle()" class="text-gray-400 focus:outline-none cursor-default" tabindex="-1">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                    </svg>
+                </button>
+                
+                <!-- Clear Button (shown when has text) -->
+                <button type="button" x-show="search" @click="clear()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none transition-colors" tabindex="-1">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
         </div>
         
