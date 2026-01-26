@@ -321,7 +321,7 @@
                     fp = flatpickr(datesInput, {
                         locale: 'es',
                         dateFormat: 'Y-m-d',
-                        minDate: '{{ now()->toDateString() }}',
+                        minDate: '{{ Carbon\Carbon::create($year, $month, 1)->startOfMonth()->toDateString() }}',
                         maxDate: '{{ Carbon\Carbon::create($year, $month, 1)->endOfMonth()->toDateString() }}',
                         mode: 'multiple',
                         conjunction: ', ',
@@ -330,7 +330,16 @@
                         theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
                         disable: [
                             function (date) {
-                                return (date.getDay() === 0 || date.getDay() === 6);
+                                // Deshabilitar fines de semana
+                                const isWeekend = (date.getDay() === 0 || date.getDay() === 6);
+                                if (isWeekend) return true;
+
+                                // Deshabilitar días pasados
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                if (date < today) return true;
+
+                                return false;
                             }
                         ],
                         onChange: function (selectedDates, dateStr, instance) {
