@@ -28,10 +28,49 @@ class FlexibleScheduleController extends Controller
     {
         $user = Auth::user();
         
-        // Obtener mes y año (por defecto el mes actual)
-        $month = $request->get('month', now()->month);
-        $year = $request->get('year', now()->year);
+        // Obtener mes y año actuales
+        $now = now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
+
+        // Calcular el próximo mes
+        $nextMonthObj = $now->copy()->addMonth();
+        $nextMonth = $nextMonthObj->month;
+        $nextYear = $nextMonthObj->year;
+
+        // Si no se especificó un mes/año en el request
+        if (!$request->has('month') && !$request->has('year')) {
+            // Verificar si el periodo de planificación para el PRÓXIMO mes ya está activo
+            if (PlanningPeriodService::isInPlanningPeriod($nextMonth, $nextYear)) {
+                // Redirigir por defecto al próximo mes si su periodo está activo
+                $month = $nextMonth;
+                $year = $nextYear;
+            } else {
+                $month = $currentMonth;
+                $year = $currentYear;
+            }
+        } else {
+            // Obtener mes y año del request
+            $month = (int) $request->get('month', $currentMonth);
+            $year = (int) $request->get('year', $currentYear);
+        }
         
+        // Meses disponibles para navegación (Mes actual y Siguiente)
+        $availableMonths = [
+            [
+                'month' => $currentMonth,
+                'year' => $currentYear,
+                'name' => Carbon::create($currentYear, $currentMonth, 1)->locale('es')->monthName,
+                'isCurrent' => true
+            ],
+            [
+                'month' => $nextMonth,
+                'year' => $nextYear,
+                'name' => Carbon::create($nextYear, $nextMonth, 1)->locale('es')->monthName,
+                'isCurrent' => false
+            ]
+        ];
+
         // Obtener asignaciones del mes
         $query = FlexibleScheduleAssignment::with(['user', 'assignedBy'])
             ->forMonth($month, $year);
@@ -79,7 +118,8 @@ class FlexibleScheduleController extends Controller
             'allowedTimes',
             'allowedLunchTimes',
             'planningPeriod',
-            'areaCanHaveFlexible'
+            'areaCanHaveFlexible',
+            'availableMonths'
         ));
     }
 

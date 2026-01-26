@@ -14,10 +14,33 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
-        // Obtener mes y año desde query string, con validación
-        $currentMonth = (int) $request->get('month', now()->month);
-        $currentYear = (int) $request->get('year', now()->year);
-        
+        // Obtener mes y año actuales
+        $now = now();
+        $currentMonthRaw = $now->month;
+        $currentYearRaw = $now->year;
+
+        // Calcular el próximo mes
+        $nextMonthObj = $now->copy()->addMonth();
+        $nextMonth = $nextMonthObj->month;
+        $nextYear = $nextMonthObj->year;
+
+        // Si no se especificó un mes/año en el request
+        if (!$request->has('month') && !$request->has('year')) {
+            // Verificar si el periodo de planificación para el PRÓXIMO mes ya está activo
+            if (PlanningPeriodService::isInPlanningPeriod($nextMonth, $nextYear)) {
+                // Por defecto al próximo mes si su periodo está activo
+                $currentMonth = $nextMonth;
+                $currentYear = $nextYear;
+            } else {
+                $currentMonth = $currentMonthRaw;
+                $currentYear = $currentYearRaw;
+            }
+        } else {
+            // Obtener mes y año desde query string, con validación
+            $currentMonth = (int) $request->get('month', $currentMonthRaw);
+            $currentYear = (int) $request->get('year', $currentYearRaw);
+        }
+
         // Validar que sean valores válidos
         $currentMonth = max(1, min(12, $currentMonth));
         $currentYear = max(2020, min(2099, $currentYear));

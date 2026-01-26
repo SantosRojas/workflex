@@ -34,6 +34,17 @@
                 </div>
             @endif
 
+            {{-- Selector de mes --}}
+            <div class="mb-6 flex flex-wrap gap-2 items-center">
+                <span class="text-gray-600 dark:text-gray-400 text-sm">Mes:</span>
+                @foreach($availableMonths as $m)
+                    <a href="{{ route('flexible-schedule.index', ['month' => $m['month'], 'year' => $m['year']]) }}"
+                        class="px-3 py-1 rounded text-sm {{ $m['month'] == $month && $m['year'] == $year ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                        {{ ucfirst($m['name']) }}
+                    </a>
+                @endforeach
+            </div>
+
             {{-- Alerta si el área no puede tener horario flexible --}}
             @if(!$areaCanHaveFlexible && !Auth::user()->isAdmin())
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -321,7 +332,7 @@
                                 terminó el {{ $planningPeriod['end']->format('d/m/Y') }}.
                             </p>
 
-                            <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg inline-block">
+                            <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg inline-block text-left">
                                 <p class="text-red-800 dark:text-red-200">
                                     <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> El período fue:</span>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
@@ -329,57 +340,63 @@
                                 </p>
                             </div>
 
+                            @php
+                                $nextMonthObj = Carbon\Carbon::create($year, $month, 1)->addMonth();
+                                $isNextActive = App\Services\PlanningPeriodService::isInPlanningPeriod($nextMonthObj->month, $nextMonthObj->year);
+                            @endphp
+
+                            @if($isNextActive)
+                                <div class="mt-8 p-4 bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700">
+                                    <p class="text-green-800 dark:text-green-200 font-medium mb-2">
+                                        ✨ ¡Ya puedes planificar para {{ $nextMonthObj->locale('es')->monthName }}!
+                                    </p>
+                                    <a href="{{ route('flexible-schedule.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}"
+                                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-colors text-sm">
+                                        Ir a Planificación de {{ ucfirst($nextMonthObj->locale('es')->monthName) }}
+                                    </a>
+                                </div>
+                            @endif
+
                             <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
                                 Las asignaciones para este mes ya no pueden ser modificadas.
                             </p>
-                        @elseif($status === 'ended')
-                            {{-- Período terminado hace más de 3 días - Mostrar siguiente período --}}
+                        @elseif($status === 'ended' || $status === 'before')
+                            {{-- Período terminado o aún no comienza --}}
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                Aún no es momento de asignar
-                            </h3>
-
-                            <p class="text-gray-600 dark:text-gray-400 mb-6">
-                                El período de planificación para
-                                <strong>{{ Carbon\Carbon::create($nextYear, $nextMonth, 1)->locale('es')->monthName }}
-                                    {{ $nextYear }}</strong>
-                                aún no está activo.
-                            </p>
-
-                            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
-                                <p class="text-blue-800 dark:text-blue-200">
-                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Período de planificación:</span>
-                                    <span class="text-lg">{{ $nextPeriod['start']->format('d/m/Y') }} -
-                                        {{ $nextPeriod['end']->format('d/m/Y') }}</span>
-                                </p>
-                            </div>
-
-                            <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-                                Regresa durante el período indicado para realizar las asignaciones de horario flexible.
-                            </p>
-                        @else
-                            {{-- Período aún no comienza --}}
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                Aún no es momento de asignar
+                                Periodo de Planificación
                             </h3>
 
                             <p class="text-gray-600 dark:text-gray-400 mb-6">
                                 El período de planificación para
                                 <strong>{{ Carbon\Carbon::create($year, $month, 1)->locale('es')->monthName }}
                                     {{ $year }}</strong>
-                                aún no está activo.
+                                {{ $status === 'ended' ? 'ha finalizado' : 'aún no está activo' }}.
                             </p>
 
-                            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
+                            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block text-left">
                                 <p class="text-blue-800 dark:text-blue-200">
-                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Período de planificación:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Rango de planificación:</span>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
                                         {{ $planningPeriod['end']->format('d/m/Y') }}</span>
                                 </p>
                             </div>
 
-                            <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-                                Regresa durante el período indicado para realizar las asignaciones de horario flexible.
-                            </p>
+                            @php
+                                $nextMonthObj = Carbon\Carbon::create($year, $month, 1)->addMonth();
+                                $isNextActive = App\Services\PlanningPeriodService::isInPlanningPeriod($nextMonthObj->month, $nextMonthObj->year);
+                            @endphp
+
+                            @if($isNextActive)
+                                <div class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-700">
+                                    <p class="text-indigo-800 dark:text-indigo-200 font-medium mb-2">
+                                        💡 El periodo para {{ $nextMonthObj->locale('es')->monthName }} ya está disponible.
+                                    </p>
+                                    <a href="{{ route('flexible-schedule.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}"
+                                       class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition-colors text-sm">
+                                        Planificar {{ ucfirst($nextMonthObj->locale('es')->monthName) }}
+                                    </a>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>
