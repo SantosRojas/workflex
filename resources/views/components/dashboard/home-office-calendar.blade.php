@@ -21,7 +21,10 @@
                     <a href="{{ route('dashboard', ['month' => $previousMonth->month, 'year' => $previousMonth->year]) }}"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         title="Mes anterior">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
                     </a>
                 @endif
 
@@ -36,7 +39,9 @@
                     <a href="{{ route('dashboard', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         title="Mes siguiente">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
                     </a>
                 @endif
             </div>
@@ -44,7 +49,9 @@
             @if($user->canManageAssignments())
                 <a href="{{ route('home-office.index') }}"
                     class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 inline-flex items-center">
-                    Gestionar asignaciones <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    Gestionar asignaciones <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </a>
             @endif
         </div>
@@ -95,10 +102,10 @@
                 <div @if($hasAssignments && !$isWeekend)
                     onclick="openDayModal('{{ $dateKey }}', '{{ $currentDate->locale('es')->isoFormat('dddd D [de] MMMM') }}')"
                 @endif class="h-20 p-2 rounded-lg border-2 transition-all overflow-hidden
-                                {{ $isWeekend ? 'bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-60' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' }}
-                                {{ $isToday ? 'ring-2 ring-green-500 ring-offset-2 dark:ring-offset-gray-800' : '' }}
-                                {{ $hasAssignments && !$isWeekend ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-500' : '' }}
-                            ">
+                                    {{ $isWeekend ? 'bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-60' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' }}
+                                    {{ $isToday ? 'ring-2 ring-green-500 ring-offset-2 dark:ring-offset-gray-800' : '' }}
+                                    {{ $hasAssignments && !$isWeekend ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-500' : '' }}
+                                ">
                     <div class="flex justify-between items-start">
                         <span
                             class="text-sm font-bold {{ $isToday ? 'text-green-600 dark:text-green-400' : ($isWeekend ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300') }}">
@@ -116,6 +123,7 @@
                             @foreach($dayAssignments->take(2) as $assignment)
                                 <p class="text-xs text-blue-600 dark:text-blue-400 truncate leading-tight">
                                     {{ Str::before($assignment->user->name, ' ') }}
+                                    {{ Str::before($assignment->user->last_name, ' ') }}
                                 </p>
                             @endforeach
                             @if($dayAssignments->count() > 2)

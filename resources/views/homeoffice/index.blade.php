@@ -90,30 +90,23 @@
                             <form action="{{ route('home-office.store') }}" method="POST" class="space-y-4">
                                 @csrf
 
-                                    @php
-                                        $usersForAutocomplete = $teamMembers->map(function($member) use ($month, $year) {
-                                            $daysUsed = $member->homeOfficeDaysInMonth($month, $year);
-                                            return [
-                                                'id' => $member->id,
-                                                'name' => $member->name,
-                                                'last_name' => $member->last_name,
-                                                'work_area' => Auth::user()->isAdmin() ? $member->work_area : null,
-                                                'days_used' => $daysUsed
-                                            ];
-                                        })->values()->toArray();
-                                    @endphp
+                                @php
+                                    $usersForAutocomplete = $teamMembers->map(function ($member) use ($month, $year) {
+                                        $daysUsed = $member->homeOfficeDaysInMonth($month, $year);
+                                        return [
+                                            'id' => $member->id,
+                                            'name' => $member->name,
+                                            'last_name' => $member->last_name,
+                                            'work_area' => Auth::user()->isAdmin() ? $member->work_area : null,
+                                            'days_used' => $daysUsed
+                                        ];
+                                    })->values()->toArray();
+                                @endphp
 
-                                    <div>
-                                        <x-forms.autocomplete 
-                                            label="Empleado"
-                                            name="user_id"
-                                            :items="$usersForAutocomplete"
-                                            itemText="name"
-                                            itemValue="id"
-                                            placeholder="Buscar empleado..."
-                                            required="true"
-                                        />
-                                    </div>
+                                <div>
+                                    <x-forms.autocomplete label="Empleado" name="user_id" :items="$usersForAutocomplete"
+                                        itemText="name" itemValue="id" placeholder="Buscar empleado..." required="true" />
+                                </div>
 
                                 <div>
                                     <x-input-label for="dates" value="Fechas de Home Office" />
@@ -154,7 +147,8 @@
                                         <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                             <div>
                                                 <span
-                                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $assignment->user->name }}</span>
+                                                    class="font-medium text-gray-800 dark:text-gray-200">{{ Str::before($assignment->user->name, ' ') }}
+                                                    {{ Str::before($assignment->user->last_name, ' ') }}</span>
                                                 <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">
                                                     {{ Carbon\Carbon::parse($assignment->date)->locale('es')->isoFormat('dddd D [de] MMMM') }}
                                                 </span>
@@ -210,7 +204,8 @@
 
                         @if($status === 'just_ended')
                             {{-- Período recién terminado (menos de 3 días) --}}
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-center gap-2">
+                            <h3
+                                class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-center gap-2">
                                 <x-icons.warning class="w-6 h-6 text-red-500" /> El período de asignación finalizó
                             </h3>
 
@@ -223,7 +218,8 @@
 
                             <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg inline-block">
                                 <p class="text-red-800 dark:text-red-200">
-                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> El período fue:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar
+                                            class="w-5 h-5" /> El período fue:</span>
                                     <br>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
                                         {{ $planningPeriod['end']->format('d/m/Y') }}</span>
@@ -236,12 +232,13 @@
                             @endphp
 
                             @if($isNextActive)
-                                <div class="mt-8 p-4 bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700">
+                                <div
+                                    class="mt-8 p-4 bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700">
                                     <p class="text-green-800 dark:text-green-200 font-medium mb-2">
                                         ✨ ¡Ya puedes planificar para {{ $nextMonthObj->locale('es')->monthName }}!
                                     </p>
-                                    <a href="{{ route('home-office.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}" 
-                                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-colors text-sm">
+                                    <a href="{{ route('home-office.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}"
+                                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-colors text-sm">
                                         Ir a Planificación de {{ ucfirst($nextMonthObj->locale('es')->monthName) }}
                                     </a>
                                 </div>
@@ -265,7 +262,8 @@
 
                             <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg inline-block">
                                 <p class="text-blue-800 dark:text-blue-200">
-                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar class="w-5 h-5" /> Rango de planificación:</span>
+                                    <span class="font-semibold flex items-center justify-center gap-2"><x-icons.calendar
+                                            class="w-5 h-5" /> Rango de planificación:</span>
                                     <br>
                                     <span class="text-lg">{{ $planningPeriod['start']->format('d/m/Y') }} -
                                         {{ $planningPeriod['end']->format('d/m/Y') }}</span>
@@ -278,12 +276,13 @@
                             @endphp
 
                             @if($isNextActive)
-                                <div class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-700">
+                                <div
+                                    class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-700">
                                     <p class="text-indigo-800 dark:text-indigo-200 font-medium mb-2">
                                         💡 El periodo para {{ $nextMonthObj->locale('es')->monthName }} ya está disponible.
                                     </p>
-                                    <a href="{{ route('home-office.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}" 
-                                       class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition-colors text-sm">
+                                    <a href="{{ route('home-office.index', ['month' => $nextMonthObj->month, 'year' => $nextMonthObj->year]) }}"
+                                        class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition-colors text-sm">
                                         Planificar {{ ucfirst($nextMonthObj->locale('es')->monthName) }}
                                     </a>
                                 </div>
@@ -359,12 +358,12 @@
 
                     // Escuchar selección del autocomplete
                     document.addEventListener('item-selected', function (e) {
-                         const selected = e.detail;
-                         
-                         // Limpiar fechas seleccionadas
+                        const selected = e.detail;
+
+                        // Limpiar fechas seleccionadas
                         fp.clear();
                         previewContainer.innerHTML = '';
-                        
+
                         if (selected) {
                             const daysUsed = parseInt(selected.days_used) || 0;
                             maxSelectableDates = maxDaysPerMonth - daysUsed;
@@ -409,13 +408,13 @@
                         const alert = document.createElement('div');
                         alert.className = 'fixed top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg shadow-lg z-50 animate-pulse';
                         alert.innerHTML = `
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span>Solo puedes seleccionar ${maxSelectableDates} día(s) para este empleado</span>
-                                </div>
-                            `;
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span>Solo puedes seleccionar ${maxSelectableDates} día(s) para este empleado</span>
+                                    </div>
+                                `;
                         document.body.appendChild(alert);
 
                         setTimeout(() => {
@@ -444,13 +443,13 @@
                             });
 
                             badge.innerHTML = `
-                                        ${dateText}
-                                        <button type="button" class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-700" data-index="${index}">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
-                                    `;
+                                            ${dateText}
+                                            <button type="button" class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-700" data-index="${index}">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        `;
 
                             badge.querySelector('button').addEventListener('click', function () {
                                 const newDates = fpInstance.selectedDates.filter((_, i) => i !== index);

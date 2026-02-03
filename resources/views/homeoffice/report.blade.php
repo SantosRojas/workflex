@@ -43,7 +43,8 @@
 
             {{-- Estadísticas generales --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                <div
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
                     <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-800 mb-2">
                         <x-icons.check class="w-6 h-6 text-blue-600 dark:text-blue-300" />
                     </div>
@@ -52,7 +53,8 @@
                     </div>
                     <div class="text-gray-600 dark:text-gray-400">Total asignaciones</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                <div
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
                     <div class="p-3 rounded-full bg-green-100 dark:bg-green-800 mb-2">
                         <x-icons.users class="w-6 h-6 text-green-600 dark:text-green-300" />
                     </div>
@@ -61,7 +63,8 @@
                     </div>
                     <div class="text-gray-600 dark:text-gray-400">Empleados con home office</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
+                <div
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col items-center">
                     <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-800 mb-2">
                         <x-icons.calendar class="w-6 h-6 text-purple-600 dark:text-purple-300" />
                     </div>
@@ -109,7 +112,8 @@
                                         <tr>
                                             <td
                                                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                {{ $data['user']->name }}
+                                                {{ Str::before($data['user']->name, ' ') }}
+                                                {{ Str::before($data['user']->last_name, ' ') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $data['user']->work_area }}
@@ -166,7 +170,8 @@
                                     <div class="space-y-1">
                                         @foreach($dateAssignments as $assignment)
                                             <div class="text-sm text-gray-600 dark:text-gray-400">
-                                                • {{ $assignment->user->name }}
+                                                • {{ Str::before($assignment->user->name, ' ') }}
+                                                {{ Str::before($assignment->user->last_name, ' ') }}
                                             </div>
                                         @endforeach
                                     </div>

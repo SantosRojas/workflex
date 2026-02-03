@@ -14,7 +14,9 @@
             </h3>
             <a href="{{ route('flexible-schedule.index') }}"
                 class="text-sm text-green-600 hover:text-green-800 dark:text-green-400 inline-flex items-center">
-                Gestionar horarios <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                Gestionar horarios <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
             </a>
         </div>
 
@@ -57,6 +59,7 @@
                             @foreach($areaAssignments->take(2) as $assignment)
                                 <p class="text-xs text-green-600 dark:text-green-400 truncate leading-tight">
                                     {{ Str::before($assignment->user->name, ' ') }}
+                                    {{ Str::before($assignment->user->last_name, ' ') }}
                                 </p>
                             @endforeach
                             @if($areaAssignments->count() > 2)
